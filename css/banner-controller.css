@@ -1,0 +1,411 @@
+/*
+ * Banner-Controller.css - 배너 전용 제어 시스템
+ * eXmate slim 물류 관리 시스템
+ * 
+ * 주의: 기존 스타일과 완전히 분리된 독립적 시스템
+ * 네임스페이스: banner-ctrl-*
+ */
+
+/* ===========================================
+ * 배너 제어 패널 스타일
+ * =========================================== */
+
+/* 배너 제어 패널 컨테이너 */
+.banner-ctrl-panel {
+  position: fixed;
+  top: 120px;
+  right: 20px;
+  width: 320px;
+  z-index: 1055;
+  background: #ffffff;
+  border: 1px solid #e3e6e9;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  display: none;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.banner-ctrl-panel.show {
+  display: block;
+  animation: bannerCtrlFadeIn 0.3s ease-out;
+}
+
+/* 패널 헤더 */
+.banner-ctrl-header {
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.banner-ctrl-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.banner-ctrl-title::before {
+  content: "🎨";
+  margin-right: 0.5rem;
+}
+
+.banner-ctrl-close {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.banner-ctrl-close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 패널 바디 */
+.banner-ctrl-body {
+  padding: 1.25rem;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* 제어 섹션 */
+.banner-ctrl-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.banner-ctrl-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.banner-ctrl-section-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.banner-ctrl-section-title::before {
+  content: "▸";
+  margin-right: 0.5rem;
+  color: #667eea;
+}
+
+/* 버튼 스타일 */
+.banner-ctrl-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #495057;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.banner-ctrl-btn:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+  color: #495057;
+  transform: translateY(-1px);
+}
+
+.banner-ctrl-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: #ffffff;
+}
+
+.banner-ctrl-btn.danger {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #ffffff;
+}
+
+.banner-ctrl-btn.danger:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+.banner-ctrl-btn.success {
+  background: #28a745;
+  border-color: #28a745;
+  color: #ffffff;
+}
+
+.banner-ctrl-btn.success:hover {
+  background: #218838;
+  border-color: #218838;
+}
+
+/* 입력 필드 */
+.banner-ctrl-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.2s ease;
+}
+
+.banner-ctrl-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
+}
+
+/* 슬라이더 */
+.banner-ctrl-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #dee2e6;
+  outline: none;
+  margin: 0.75rem 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+.banner-ctrl-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.banner-ctrl-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+/* 배너 목록 */
+.banner-ctrl-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background: #f8f9fa;
+}
+
+.banner-ctrl-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #dee2e6;
+  transition: background-color 0.2s ease;
+}
+
+.banner-ctrl-item:last-child {
+  border-bottom: none;
+}
+
+.banner-ctrl-item:hover {
+  background: #e9ecef;
+}
+
+.banner-ctrl-item.active {
+  background: #e3f2fd;
+  border-left: 4px solid #667eea;
+}
+
+.banner-ctrl-thumbnail {
+  width: 50px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 0.75rem;
+  border: 1px solid #dee2e6;
+}
+
+.banner-ctrl-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.banner-ctrl-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.banner-ctrl-status {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+/* 상태 표시 */
+.banner-ctrl-status-indicator {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.banner-ctrl-status-indicator.playing {
+  background: #d4edda;
+  color: #155724;
+}
+
+.banner-ctrl-status-indicator.paused {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.banner-ctrl-status-indicator.stopped {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* 프리뷰 영역 */
+.banner-ctrl-preview {
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: #f8f9fa;
+}
+
+.banner-ctrl-preview-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.banner-ctrl-preview-info {
+  padding: 0.75rem;
+  font-size: 0.8rem;
+  color: #6c757d;
+  text-align: center;
+}
+
+/* 토글 스위치 */
+.banner-ctrl-toggle {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.banner-ctrl-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.banner-ctrl-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.banner-ctrl-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.banner-ctrl-toggle input:checked + .banner-ctrl-toggle-slider {
+  background-color: #667eea;
+}
+
+.banner-ctrl-toggle input:checked + .banner-ctrl-toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* 애니메이션 */
+@keyframes bannerCtrlFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .banner-ctrl-panel {
+    width: 280px;
+    top: 80px;
+    right: 10px;
+  }
+  
+  .banner-ctrl-body {
+    padding: 1rem;
+    max-height: 500px;
+  }
+  
+  .banner-ctrl-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    min-width: 70px;
+  }
+}
+
+/* 스크롤바 스타일링 */
+.banner-ctrl-body::-webkit-scrollbar,
+.banner-ctrl-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.banner-ctrl-body::-webkit-scrollbar-track,
+.banner-ctrl-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.banner-ctrl-body::-webkit-scrollbar-thumb,
+.banner-ctrl-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.banner-ctrl-body::-webkit-scrollbar-thumb:hover,
+.banner-ctrl-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

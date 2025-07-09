@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>eXmate slim | AdminLTE v3 (최종 개선안)</title>
+
+  <!-- Pretendard Font -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AdminLTE css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css">
+  <style>
+    /* Pretendard 폰트 적용 및 UI 개선을 위한 커스텀 스타일 */
+    body { font-family: 'Pretendard', sans-serif; }
+    
+    .content-wrapper { background-color: #f4f6f9; }
+    .card { box-shadow: 0 0 1px rgba(0,0,0,.125),0 1px 3px rgba(0,0,0,.2); border: 0; }
+    
+    /* 높이 및 스크롤 제어 */
+    html, body, .wrapper { height: 100%; }
+    .content-wrapper { display: flex; flex-direction: column; height: 100%; }
+    section.content { flex-grow: 1; display: flex; flex-direction: column; }
+    section.content > .container-fluid { display: flex; flex-direction: column; flex-grow: 1; }
+    
+    /* 일관된 영역 간 간격 */
+    .row + .row { margin-top: 1rem !important; }
+
+    /* 타이틀 폰트 사이즈 조정 */
+    .card-title-lg {
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    .sub-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    /* 공지사항 폰트 사이즈 조정 */
+    .nav-pills .nav-link {
+        font-size: 0.9rem;
+    }
+
+    /* 요약 정보 박스 스타일 */
+    .summary-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 1.25rem;
+        background-color: #f8f9fa;
+        border-radius: .25rem;
+        height: 100%;
+    }
+    .summary-box .summary-box-label {
+        color: #6c757d;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .summary-box .summary-box-value {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.2;
+        text-align: right;
+    }
+    .summary-box .summary-box-value .unit {
+        font-size: 1rem;
+        margin-left: 4px;
+        font-weight: 500;
+    }
+    .value-primary { color: #007bff; }
+    .value-danger { color: #dc3545; }
+    .value-warning { color: #ffc107; }
+
+    /* 바로가기 버튼 스타일 (높이 증가) */
+    .quick-link-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem 0.25rem; /* 높이 및 패딩 조정 */
+        border: 1px solid #e3e6e9;
+        border-radius: .25rem;
+        color: #495057;
+        font-size: 0.875rem;
+        font-weight: 600;
+        height: 100%;
+        text-align: center;
+    }
+    .quick-link-item:hover {
+        background-color: #f8f9fa;
+        color: #007bff;
+        text-decoration: none;
+    }
+    .quick-link-item i {
+        font-size: 1.5rem; /* 아이콘 크기 조정 */
+        margin-bottom: 0.5rem;
+    }
+
+    /* 프로모션 캐러셀 스타일 (4:3 비율) */
+    .promo-carousel-wrapper {
+        position: relative;
+        width: 100%;
+        padding-top: 75%; /* 4:3 Aspect Ratio */
+    }
+    #promoCarousel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    #promoCarousel .carousel-inner, #promoCarousel .carousel-item, #promoCarousel .promo-carousel-item-img {
+        height: 100%;
+    }
+    .promo-carousel-item-img {
+        object-fit: cover;
+        border-radius: .25rem;
+    }
+    
+    /* 텍스트 링크 스타일 */
+    .text-link {
+        color: #007bff;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .text-link:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+
+    .modal-body .form-control { font-family: 'Courier New', Courier, monospace; }
+  </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+          <a class="nav-link" href="#" data-toggle="modal" data-target="#multiTrackModal" role="button" title="복수화물 조회">
+              <i class="fas fa-search"></i>
+          </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-bell"></i>
+          <span class="badge badge-warning navbar-badge">15</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+       <li class="nav-item dropdown user-menu">
+        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+          <img src="https://placehold.co/160x160/007bff/ffffff?text=U" class="user-image img-circle elevation-2" alt="User Image">
+          <span class="d-none d-md-inline">사용자</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <li class="user-header bg-primary">
+            <img src="https://placehold.co/160x160/007bff/ffffff?text=U" class="img-circle elevation-2" alt="User Image">
+            <p>사용자<small>Member since Nov. 2023</small></p>
+          </li>
+          <li class="user-footer">
+            <a href="#" class="btn btn-default btn-flat">프로필</a>
+            <a href="#" class="btn btn-default btn-flat float-right">로그아웃</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a href="#" class="brand-link">
+      <i class="fa-solid fa-cubes-stacked fa-lg brand-image img-circle elevation-3" style="opacity: .8"></i>
+      <span class="brand-text font-weight-light">eXmate slim</span>
+    </a>
+    <div class="sidebar">
+      <nav class="mt-2">
+        <ul id="lnb-menu" class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item"><a href="#" class="nav-link active"><i class="nav-icon fas fa-home"></i><p>홈</p></a></li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-bell"></i><p>공지사항</p></a></li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-box-open"></i><p>입고 관리<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>입고 내역</p></a></li>
+              <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>입고 등록</p></a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-paper-plane"></i><p>출고 관리<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>출고 내역</p></a></li>
+              <li class="nav-item"><a href="#" class="nav-link"><i class="far fa-circle nav-icon"></i><p>출고 등록</p></a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-chart-bar"></i><p>통계</p></a></li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-cog"></i><p>설정</p></a></li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <section class="content p-3">
+      <div class="container-fluid">
+        <!-- Top Row -->
+        <div class="row d-flex align-items-stretch">
+          <div class="col-lg-9 d-flex align-items-stretch">
+            <div class="card w-100">
+              <div class="card-header"><h3 class="card-title card-title-lg">전체 지연 현황 요약</h3></div>
+              <div class="card-body d-flex align-items-center p-3">
+                <div class="row w-100">
+                  <div class="col-md-4"><div class="summary-box"><div class="summary-box-label">전체 처리지연</div><div class="summary-box-value value-primary">38<span class="unit">건</span></div></div></div>
+                  <div class="col-md-4"><div class="summary-box"><div class="summary-box-label">최장기 지연 (15+일)</div><div class="summary-box-value value-danger">5<span class="unit">건</span></div></div></div>
+                  <div class="col-md-4"><div class="summary-box"><div class="summary-box-label">최다 지연 사유: 미배송</div><div class="summary-box-value value-warning">12<span class="unit">건</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 d-flex align-items-stretch">
+             <div class="card w-100 d-flex flex-column">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                  <h3 class="card-title card-title-lg mb-0">공지사항</h3>
+                  <a href="#" class="text-link">더보기+</a>
+              </div>
+              <div class="card-body p-0 pb-2">
+                <ul class="nav nav-pills flex-column">
+                  <li class="nav-item"><a href="#" class="nav-link">[안내] 시스템 정기점검<span class="float-right text-muted">06-15</span></a></li>
+                  <li class="nav-item"><a href="#" class="nav-link">[중요] 개인정보 처리방침 개정<span class="float-right text-muted">06-12</span></a></li>
+                  <li class="nav-item"><a href="#" class="nav-link">[업데이트] v2.1 기능 업데이트<span class="float-right text-muted">06-10</span></a></li>
+                  <li class="nav-item"><a href="#" class="nav-link">[공지] 일본 연휴 기간 배송 지연<span class="float-right text-muted">06-08</span></a></li>
+                  <li class="nav-item"><a href="#" class="nav-link">[이벤트] 신규 고객 배송비 할인<span class="float-right text-muted">06-05</span></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Row -->
+        <div class="row d-flex align-items-stretch">
+          <section class="col-lg-9 d-flex align-items-stretch">
+            <div class="card w-100">
+              <div class="card-header">
+                <h3 class="card-title card-title-lg">상태별 상세 현황</h3>
+              </div>
+              <div class="card-body p-3">
+                <div class="d-sm-flex justify-content-between align-items-center p-2 mb-3 bg-light rounded">
+                  <h5 class="mb-2 mb-sm-0 sub-title">미입고 현황</h5>
+                  <a href="#" class="text-link">일별 입고 현황 <i class="fas fa-arrow-circle-right ml-1"></i></a>
+                </div>
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>상태</th><th class="text-center">D+3</th><th class="text-center">D+5</th><th class="text-center">D+7</th>
+                      <th class="text-center">D+10</th><th class="text-center text-danger">D+15 이상</th><th class="text-center">합계</th>
+                    </tr>
+                  </thead>
+                  <tbody id="status-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+          
+          <section class="col-lg-3 d-flex align-items-stretch">
+            <div class="d-flex flex-column w-100">
+              <div class="card">
+                <div class="card-body p-3">
+                   <div class="row">
+                      <div class="col-3"><a href="#" class="quick-link-item" data-toggle="modal" data-target="#trackingModal"><i class="fas fa-search-location"></i><span>화물추적</span></a></div>
+                      <div class="col-3"><a href="#" class="quick-link-item"><i class="fas fa-book"></i><span>매뉴얼</span></a></div>
+                      <div class="col-3"><a href="https://exm.exmate.net/rateguide/" target="_blank" rel="noopener noreferrer" class="quick-link-item"><i class="fas fa-file-invoice-dollar"></i><span>요금가이드</span></a></div>
+                      <div class="col-3"><a href="https://exmate.net/EXMATE" target="_blank" rel="noopener noreferrer" class="quick-link-item"><i class="fas fa-building"></i><span>회사소개</span></a></div>
+                   </div>
+                </div>
+              </div>
+              <div class="card flex-grow-1">
+                  <div class="card-body p-0">
+                      <div class="promo-carousel-wrapper">
+                        <div id="promoCarousel" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active"><img src="https://placehold.co/800x600/A78BFA/4C1D95?text=여름+시즌+특별+할인" class="d-block w-100 promo-carousel-item-img" alt="프로모션 1"></div>
+                                <div class="carousel-item"><img src="https://placehold.co/800x600/FBBF24/92400E?text=신규+셀러+지원" class="d-block w-100 promo-carousel-item-img" alt="프로모션 2"></div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="multiTrackModal" tabindex="-1" role="dialog"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">복수화물 조회</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><p class="text-muted">조회할 번호를 한 줄에 하나씩 입력해 주세요. (최대 20개)</p><textarea class="form-control" rows="10" placeholder="123456789012&#10;123456789013&#10;..."></textarea></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button><button type="button" class="btn btn-primary">조회</button></div></div></div></div>
+<div class="modal fade" id="trackingModal" tabindex="-1" role="dialog"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">화물추적 가이드</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><h6>추적 URL</h6><div class="input-group"><input type="text" id="trackingUrl" class="form-control" value="https://pod.exmate.net/pod/?exmno={A}" readonly><div class="input-group-append"><button class="btn btn-outline-secondary" type="button" id="copyUrlBtn">복사</button></div></div><small class="form-text text-muted">{A}: 운송장번호 또는 EXM NO를 입력하세요.</small><hr><h6>권장 팝업창 크기</h6><p>너비(width): 760px, 높이(height): 600px</p></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button></div></div></div></div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
+
+<script>
+$(function () {
+    // --- LNB Active State Logic ---
+    $('#lnb-menu .nav-link').on('click', function (e) {
+        let $this = $(this);
+        if ($this.attr('href') === '#') {
+            e.preventDefault();
+        }
+
+        let isSubmenuLink = $this.parents('.nav-treeview').length > 0;
+        
+        if (!isSubmenuLink) {
+            // Deactivate all links
+            $('#lnb-menu .nav-link').removeClass('active');
+            // Deactivate any active sub-menu's parent
+            $('#lnb-menu .nav-item.is-expanded').removeClass('is-expanded');
+        } else {
+            // Deactivate other links in the same sub-menu
+            $this.closest('.nav-treeview').find('.nav-link').removeClass('active');
+        }
+
+        // Activate the clicked link and its parent if it's a sub-menu item
+        $this.addClass('active');
+        if (isSubmenuLink) {
+            $this.closest('.nav-item.has-treeview').children('.nav-link').addClass('active');
+        }
+    });
+
+    // --- Dummy data for table ---
+    const statusData = [
+        { status: '미통관', delays: [5, 2, 1, 0, 1] }, { status: '통관완료', delays: [2, 1, 0, 0, 0] },
+        { status: '배송사연계', delays: [1, 0, 0, 0, 0] }, { status: '배송지연', delays: [3, 2, 1, 1, 1] },
+        { status: '미배송(사유발생)', delays: [5, 3, 2, 1, 3] },
+    ];
+    const tableBody = $('#status-table-body');
+    if(tableBody.length) {
+        tableBody.empty();
+        statusData.forEach(data => {
+            const total = data.delays.reduce((a, b) => a + b, 0);
+            let cellsHTML = `<td><strong>${data.status}</strong></td>`;
+            data.delays.forEach((count, index) => {
+                let textColor = 'text-dark';
+                if (count > 0) {
+                    if (index <= 1) { // D+3, D+5
+                        textColor = 'text-warning';
+                    } else { // D+7, D+10, D+15
+                        textColor = 'text-danger';
+                    }
+                }
+                cellsHTML += `<td class="text-center ${count > 0 ? 'font-weight-bold' : ''} ${textColor}">${count}</td>`;
+            });
+            cellsHTML += `<td class="text-center font-weight-bold text-primary">${total}</td>`;
+            tableBody.append(`<tr>${cellsHTML}</tr>`);
+        });
+    }
+
+    // --- Copy URL Logic ---
+    $('#copyUrlBtn').on('click', function() {
+        const trackingUrlInput = $('#trackingUrl');
+        navigator.clipboard.writeText(trackingUrlInput.val()).then(() => {
+            const originalText = $(this).text();
+            $(this).text('복사됨!').addClass('btn-success').removeClass('btn-outline-secondary');
+            setTimeout(() => {
+                $(this).text(originalText).removeClass('btn-success').addClass('btn-outline-secondary');
+            }, 2000);
+        });
+    });
+
+    // Activate carousel
+    $('#promoCarousel').carousel({
+        interval: 3000
+    });
+});
+</script>
+</body>
+</html>

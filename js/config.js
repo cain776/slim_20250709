@@ -1,0 +1,243 @@
+/**
+ * Config.js - 전역 설정 및 상수 관리
+ * eXmate slim 물류 관리 시스템
+ */
+
+// 시스템 설정
+const APP_CONFIG = {
+  // 앱 정보
+  app: {
+    name: 'eXmate slim',
+    version: '1.0.0',
+    description: '물류 관리 시스템',
+    author: 'eXmate',
+    defaultPage: 'dashboard'
+  },
+
+  // API 설정
+  api: {
+    baseUrl: 'https://api.exmate.net',
+    timeout: 30000,
+    retryCount: 3,
+    endpoints: {
+      tracking: '/tracking',
+      notices: '/notices',
+      statistics: '/statistics',
+      settings: '/settings'
+    }
+  },
+
+  // UI 설정
+  ui: {
+    theme: 'default',
+    sidebar: {
+      collapsed: false,
+      mini: false
+    },
+    animation: {
+      duration: 300,
+      easing: 'ease-in-out'
+    },
+    pagination: {
+      itemsPerPage: 10,
+      maxPageLinks: 5
+    }
+  },
+
+  // 데이터 새로고침 간격 (밀리초)
+  refresh: {
+    dashboard: 60000,    // 1분
+    notices: 300000,     // 5분
+    statistics: 180000   // 3분
+  },
+
+  // 로깅 설정
+  logging: {
+    level: 'info', // debug, info, warn, error
+    console: true,
+    remote: false
+  }
+};
+
+// 메뉴 설정
+const MENU_CONFIG = {
+  structure: [
+    { 
+      id: 'dashboard', 
+      name: '홈', 
+      icon: 'fas fa-home',
+      url: '#',
+      active: true,
+      order: 1
+    },
+    { 
+      id: 'notice', 
+      name: '공지사항', 
+      icon: 'fas fa-bell',
+      url: '#',
+      order: 2
+    },
+    {
+      id: 'inbound',
+      name: '입고 관리',
+      icon: 'fas fa-box-open',
+      hasSubmenu: true,
+      order: 3,
+      submenu: [
+        { id: 'inbound-history', name: '입고 내역', url: '#', order: 1 },
+        { id: 'inbound-register', name: '입고 등록', url: '#', order: 2 }
+      ]
+    },
+    {
+      id: 'outbound',
+      name: '출고 관리',
+      icon: 'fas fa-paper-plane',
+      hasSubmenu: true,
+      order: 4,
+      submenu: [
+        { id: 'outbound-history', name: '출고 내역', url: '#', order: 1 },
+        { id: 'outbound-register', name: '출고 등록', url: '#', order: 2 }
+      ]
+    },
+    { 
+      id: 'statistics', 
+      name: '통계', 
+      icon: 'fas fa-chart-bar',
+      url: '#',
+      order: 5
+    },
+    { 
+      id: 'settings', 
+      name: '설정', 
+      icon: 'fas fa-cog',
+      url: '#',
+      order: 6
+    }
+  ]
+};
+
+// 외부 링크 설정
+const EXTERNAL_LINKS = {
+  tracking: {
+    baseUrl: 'https://pod.exmate.net/pod/',
+    paramName: 'exmno',
+    windowSpecs: 'width=760,height=600,scrollbars=yes,resizable=yes'
+  },
+  rateGuide: 'https://exm.exmate.net/rateguide/',
+  companyInfo: 'https://exmate.net/EXMATE',
+  support: 'https://exmate.net/support'
+};
+
+// 상태 코드 및 메시지
+const STATUS_CONFIG = {
+  codes: {
+    SUCCESS: 200,
+    CREATED: 201,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404,
+    SERVER_ERROR: 500
+  },
+  messages: {
+    LOADING: '로딩 중...',
+    SUCCESS: '성공적으로 처리되었습니다.',
+    ERROR: '오류가 발생했습니다.',
+    NOT_FOUND: '요청한 데이터를 찾을 수 없습니다.',
+    NETWORK_ERROR: '네트워크 오류가 발생했습니다.',
+    TIMEOUT: '요청 시간이 초과되었습니다.'
+  }
+};
+
+// 로컬 스토리지 키
+const STORAGE_KEYS = {
+  userSettings: 'exmate_user_settings',
+  dashboardCache: 'exmate_dashboard_cache',
+  noticeCache: 'exmate_notice_cache',
+  sidebarState: 'exmate_sidebar_state'
+};
+
+// 날짜 포맷 설정
+const DATE_FORMAT = {
+  display: 'YYYY-MM-DD',
+  displayWithTime: 'YYYY-MM-DD HH:mm',
+  api: 'YYYY-MM-DD HH:mm:ss',
+  short: 'MM-DD'
+};
+
+// 정규표현식 패턴
+const REGEX_PATTERNS = {
+  trackingNumber: /^[A-Z0-9]{10,15}$/,
+  email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  phone: /^(\+82|0)?[1-9]\d{8,9}$/,
+  postalCode: /^\d{5}$/
+};
+
+// 설정 접근 함수들
+const Config = {
+  /**
+   * 앱 설정 가져오기
+   */
+  getAppConfig: () => APP_CONFIG.app,
+
+  /**
+   * API 설정 가져오기
+   */
+  getApiConfig: () => APP_CONFIG.api,
+
+  /**
+   * UI 설정 가져오기
+   */
+  getUiConfig: () => APP_CONFIG.ui,
+
+  /**
+   * 메뉴 구조 가져오기
+   */
+  getMenuConfig: () => MENU_CONFIG.structure,
+
+  /**
+   * 외부 링크 설정 가져오기
+   */
+  getExternalLinks: () => EXTERNAL_LINKS,
+
+  /**
+   * 상태 메시지 가져오기
+   */
+  getStatusMessage: (key) => STATUS_CONFIG.messages[key] || STATUS_CONFIG.messages.ERROR,
+
+  /**
+   * 스토리지 키 가져오기
+   */
+  getStorageKey: (key) => STORAGE_KEYS[key],
+
+  /**
+   * 날짜 포맷 가져오기
+   */
+  getDateFormat: (type = 'display') => DATE_FORMAT[type],
+
+  /**
+   * 정규표현식 패턴 가져오기
+   */
+  getRegexPattern: (type) => REGEX_PATTERNS[type],
+
+  /**
+   * 새로고침 간격 가져오기
+   */
+  getRefreshInterval: (page) => APP_CONFIG.refresh[page] || 60000,
+
+  /**
+   * 로깅 레벨 확인
+   */
+  shouldLog: (level) => {
+    const levels = ['debug', 'info', 'warn', 'error'];
+    const currentLevel = levels.indexOf(APP_CONFIG.logging.level);
+    const requestLevel = levels.indexOf(level);
+    return requestLevel >= currentLevel;
+  }
+};
+
+// 전역 스코프에 노출
+window.Config = Config;
+window.APP_CONFIG = APP_CONFIG;
+window.MENU_CONFIG = MENU_CONFIG;
+window.EXTERNAL_LINKS = EXTERNAL_LINKS;
+window.STATUS_CONFIG = STATUS_CONFIG; 

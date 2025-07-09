@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>eXmate slim | AdminLTE v3</title>
+
+  <!-- External CSS -->
+  <!-- Inter Font (Apple-like) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/banner-controller.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+          <a class="nav-link" href="#" data-toggle="modal" data-target="#multiTrackModal" role="button" title="복수화물 조회">
+              <i class="fas fa-search"></i>
+          </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-bell"></i>
+          <span class="badge badge-warning navbar-badge">15</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+       <li class="nav-item dropdown user-menu">
+        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+          <img src="https://placehold.co/160x160/007bff/ffffff?text=U" class="user-image img-circle elevation-2" alt="User Image">
+          <span class="d-none d-md-inline">사용자</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <li class="user-header bg-primary">
+            <img src="https://placehold.co/160x160/007bff/ffffff?text=U" class="img-circle elevation-2" alt="User Image">
+            <p>사용자<small>Member since Nov. 2023</small></p>
+          </li>
+          <li class="user-footer">
+            <a href="#" class="btn btn-default btn-flat">프로필</a>
+            <a href="#" class="btn btn-default btn-flat float-right">로그아웃</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a href="#" class="brand-link">
+      <i class="fa-solid fa-cubes-stacked fa-lg brand-image img-circle elevation-3" style="opacity: .8"></i>
+      <span class="brand-text font-weight-light">eXmate slim</span>
+    </a>
+    <div class="sidebar">
+      <nav class="mt-2">
+        <ul id="lnb-menu" class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
+          <li class="nav-item">
+            <a href="#" class="nav-link active" data-page="dashboard">
+              <i class="nav-icon fas fa-home"></i>
+              <p>홈</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-page="notice">
+              <i class="nav-icon fas fa-bell"></i>
+              <p>공지사항</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-box-open"></i>
+              <p>입고 관리<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="inbound-history">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>입고 내역</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="inbound-register">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>입고 등록</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-paper-plane"></i>
+              <p>출고 관리<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="outbound-history">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>출고 내역</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="outbound-register">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>출고 등록</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-page="statistics">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>통계</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-page="settings">
+              <i class="nav-icon fas fa-cog"></i>
+              <p>설정</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <!-- Main Content -->
+    <div id="main-content">
+      <!-- 대시보드 콘텐츠가 여기에 동적으로 로드됩니다 -->
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container" class="position-fixed" style="top: 20px; right: 20px; z-index: 1060;"></div>
+
+<!-- LNB Control Panel (숨겨진 상태로 시작) -->
+<div id="lnb-control-panel" class="position-fixed" style="top: 80px; right: 20px; z-index: 1050; display: none;">
+  <div class="card" style="width: 280px;">
+    <div class="card-header">
+      <h6 class="card-title mb-0">🎛️ LNB 제어판</h6>
+      <button type="button" class="btn btn-sm btn-outline-secondary float-right" onclick="toggleLNBPanel()">닫기</button>
+    </div>
+    <div class="card-body p-3">
+      <!-- 접기/펼치기 -->
+      <div class="mb-3">
+        <label class="font-weight-bold">접기/펼치기</label>
+        <div class="btn-group d-block">
+          <button class="btn btn-sm btn-primary" onclick="lnbController.toggle()">토글</button>
+          <button class="btn btn-sm btn-outline-primary" onclick="lnbController.collapse()">접기</button>
+          <button class="btn btn-sm btn-outline-primary" onclick="lnbController.expand()">펼치기</button>
+        </div>
+      </div>
+      
+      <!-- 테마 변경 -->
+      <div class="mb-3">
+        <label class="font-weight-bold">테마</label>
+        <select class="form-control form-control-sm" onchange="lnbController.setTheme(this.value)">
+          <option value="dark">Dark (기본)</option>
+          <option value="light">Light</option>
+          <option value="darkBlue">Dark Blue</option>
+          <option value="darkGreen">Dark Green</option>
+          <option value="darkPurple">Dark Purple</option>
+          <option value="darkRed">Dark Red</option>
+        </select>
+      </div>
+      
+      <!-- 너비 조정 -->
+      <div class="mb-3">
+        <label class="font-weight-bold">너비 조정</label>
+        <input type="range" class="form-control-range" min="200" max="400" value="250" 
+               oninput="lnbController.setWidth(this.value); document.getElementById('width-value').textContent = this.value + 'px'">
+        <small class="text-muted">현재: <span id="width-value">250px</span></small>
+      </div>
+      
+      <!-- 메뉴 제어 -->
+      <div class="mb-3">
+        <label class="font-weight-bold">메뉴 제어</label>
+        <div class="btn-group-vertical d-block">
+          <button class="btn btn-sm btn-success mb-1" onclick="addTestMenu()">테스트 메뉴 추가</button>
+          <button class="btn btn-sm btn-warning mb-1" onclick="toggleNoticeMenu()">공지사항 토글</button>
+          <button class="btn btn-sm btn-info mb-1" onclick="addBadgeToStats()">통계에 뱃지 추가</button>
+        </div>
+      </div>
+      
+      <!-- 상태 정보 -->
+      <div class="mb-2">
+        <label class="font-weight-bold">상태 정보</label>
+        <button class="btn btn-sm btn-outline-info d-block" onclick="showLNBStatus()">상태 확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="multiTrackModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">복수화물 조회</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">조회할 번호를 한 줄에 하나씩 입력해 주세요. (최대 20개)</p>
+        <textarea class="form-control" rows="10" placeholder="123456789012&#10;123456789013&#10;..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-primary">조회</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="trackingModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">화물추적 가이드</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>추적 URL</h6>
+        <div class="input-group">
+          <input type="text" id="trackingUrl" class="form-control" 
+                 value="https://pod.exmate.net/pod/?exmno={A}" readonly>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="copyUrlBtn">복사</button>
+          </div>
+        </div>
+        <small class="form-text text-muted">{A}: 운송장번호 또는 EXM NO를 입력하세요.</small>
+        <hr>
+        <h6>권장 팝업창 크기</h6>
+        <p>너비(width): 760px, 높이(height): 600px</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- External Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
+
+<!-- Custom Scripts -->
+<script src="js/config.js"></script>
+<script src="js/data-service.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/event-manager.js"></script>
+<script src="js/error-manager.js"></script>
+<script src="js/lnb-controller.js"></script>
+<script src="js/base-page.js"></script>
+<script src="js/page-manager.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/banner-controller.js"></script>
+
+<!-- LNB 제어 함수들 -->
+<script>
+// LNB 제어판 토글
+function toggleLNBPanel() {
+  $('#lnb-control-panel').toggle();
+}
+
+// LNB 제어판 표시 (Ctrl + L 단축키)
+$(document).keydown(function(e) {
+  if (e.ctrlKey && e.key === 'l') {
+    e.preventDefault();
+    toggleLNBPanel();
+  }
+});
+
+// 테스트 메뉴 추가
+function addTestMenu() {
+  const testMenu = {
+    pageId: 'test-' + Date.now(),
+    text: '테스트 메뉴',
+    icon: 'fas fa-flask'
+  };
+  
+  lnbController.addMenuItem(testMenu);
+  
+  // 토스트 메시지
+  showToast('성공', '테스트 메뉴가 추가되었습니다.', 'success');
+}
+
+// 공지사항 메뉴 토글
+function toggleNoticeMenu() {
+  lnbController.toggleMenuItem('notice');
+  
+  const isVisible = lnbController.menuElement.find('[data-page="notice"]').closest('.nav-item').is(':visible');
+  showToast('알림', `공지사항 메뉴가 ${isVisible ? '표시' : '숨김'}되었습니다.`, 'info');
+}
+
+// 통계 메뉴에 뱃지 추가
+function addBadgeToStats() {
+  const badge = {
+    text: 'NEW',
+    class: 'badge-danger'
+  };
+  
+  lnbController.setMenuBadge('statistics', badge);
+  showToast('성공', '통계 메뉴에 뱃지가 추가되었습니다.', 'success');
+}
+
+// LNB 상태 정보 표시
+function showLNBStatus() {
+  const status = lnbController.getStatus();
+  
+  const statusHtml = `
+    <div class="status-info">
+      <h6>LNB 상태 정보</h6>
+      <ul class="list-unstyled">
+        <li><strong>접힘 상태:</strong> ${status.isCollapsed ? '접힘' : '펼침'}</li>
+        <li><strong>현재 테마:</strong> ${status.theme}</li>
+        <li><strong>메뉴 개수:</strong> ${status.menuCount}개</li>
+        <li><strong>활성 메뉴:</strong> ${status.activeMenu.text || '없음'}</li>
+      </ul>
+    </div>
+  `;
+  
+  // SweetAlert 사용 (있는 경우) 또는 기본 알림
+  if (window.Swal) {
+    Swal.fire({
+      title: 'LNB 상태 정보',
+      html: statusHtml,
+      icon: 'info',
+      confirmButtonText: '확인'
+    });
+  } else {
+    const statusText = `
+LNB 상태 정보:
+- 접힘 상태: ${status.isCollapsed ? '접힘' : '펼침'}
+- 현재 테마: ${status.theme}
+- 메뉴 개수: ${status.menuCount}개
+- 활성 메뉴: ${status.activeMenu.text || '없음'}
+    `;
+    alert(statusText);
+  }
+}
+
+// 토스트 메시지 표시 함수
+function showToast(title, message, type = 'info') {
+  const typeClass = {
+    'success': 'alert-success',
+    'info': 'alert-info',
+    'warning': 'alert-warning',
+    'danger': 'alert-danger'
+  }[type] || 'alert-info';
+  
+  const toastHtml = `
+    <div class="alert ${typeClass} alert-dismissible fade show" role="alert" style="margin-bottom: 10px;">
+      <strong>${title}:</strong> ${message}
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  `;
+  
+  $('#toast-container').append(toastHtml);
+  
+  // 3초 후 자동 제거
+  setTimeout(() => {
+    $('#toast-container .alert').first().fadeOut(() => {
+      $('#toast-container .alert').first().remove();
+    });
+  }, 3000);
+}
+
+// LNB 이벤트 리스너 등록
+lnbController.on('collapsed', (e) => {
+  console.log('LNB 접힘:', e.detail);
+});
+
+lnbController.on('expanded', (e) => {
+  console.log('LNB 펼침:', e.detail);
+});
+
+lnbController.on('themeChanged', (e) => {
+  console.log('테마 변경:', e.detail.theme);
+  showToast('테마 변경', `테마가 ${e.detail.theme}로 변경되었습니다.`, 'info');
+});
+
+// 페이지 로드 시 안내 메시지
+$(document).ready(function() {
+  console.log('🎛️ LNB 제어 시스템이 준비되었습니다!');
+  console.log('💡 Ctrl + L 키를 눌러 LNB 제어판을 열 수 있습니다.');
+  console.log('📖 사용법: lnbController.메서드명() 형태로 사용하세요.');
+  
+  // 3초 후 안내 토스트 표시
+  setTimeout(() => {
+    showToast('💡 안내', 'Ctrl + L 키로 LNB 제어판을 열 수 있습니다.', 'info');
+  }, 2000);
+});
+</script>
+</body>
+</html> 

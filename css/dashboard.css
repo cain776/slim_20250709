@@ -1,0 +1,307 @@
+/*
+ * Dashboard CSS - 대시보드 페이지 전용 스타일
+ * eXmate slim 물류 관리 시스템
+ */
+
+/* 요약 정보 박스 스타일 */
+.summary-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.25rem;
+  background-color: #f8f9fa;
+  border-radius: .25rem;
+  height: 100%;
+}
+
+.summary-box .summary-box-label {
+  color: #6c757d;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.summary-box .summary-box-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: right;
+}
+
+.summary-box .summary-box-value .unit {
+  font-size: 1rem;
+  margin-left: 4px;
+  font-weight: 500;
+}
+
+/* 바로가기 버튼 스타일 */
+.quick-link-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0.25rem;
+  border: 1px solid #e3e6e9;
+  border-radius: .25rem;
+  color: #495057;
+  font-size: 0.875rem;
+  font-weight: 600;
+  height: 100%;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.quick-link-item:hover {
+  background-color: #f8f9fa;
+  color: #007bff;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,.1);
+}
+
+.quick-link-item i {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 프로모션 캐러셀 스타일 (4:3 비율) */
+.promo-carousel-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 75%; /* 4:3 Aspect Ratio */
+}
+
+#promoCarousel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#promoCarousel .carousel-inner,
+#promoCarousel .carousel-item {
+  height: 100%;
+}
+
+/* 배너 컨테이너 */
+.promo-banner-container {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: .25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.promo-banner-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+/* 배너 콘텐츠 */
+.promo-banner-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.promo-banner-text {
+  text-align: center;
+  max-width: 90%;
+}
+
+.promo-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  word-break: keep-all;
+}
+
+/* 캐러셀 인디케이터 스타일 개선 */
+#promoCarousel .carousel-indicators {
+  bottom: 10px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#promoCarousel .carousel-indicators li {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(255,255,255,0.5);
+  border: none;
+  margin: 0 3px;
+  transition: all 0.3s ease;
+}
+
+#promoCarousel .carousel-indicators li.active {
+  background-color: #ffffff;
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* 캐러셀 컨트롤 스타일 개선 */
+#promoCarousel .carousel-control-prev,
+#promoCarousel .carousel-control-next {
+  width: 40px;
+  background-color: rgba(0,0,0,0.3);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 40px;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+#promoCarousel:hover .carousel-control-prev,
+#promoCarousel:hover .carousel-control-next {
+  opacity: 1;
+}
+
+#promoCarousel .carousel-control-prev {
+  left: 10px;
+}
+
+#promoCarousel .carousel-control-next {
+  right: 10px;
+}
+
+#promoCarousel .carousel-control-prev-icon,
+#promoCarousel .carousel-control-next-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* 상태 테이블 스타일 */
+.status-table {
+  margin-top: 1rem;
+}
+
+.status-table th,
+.status-table td {
+  vertical-align: middle;
+  padding: 0.75rem;
+}
+
+.status-table th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  color: #495057;
+}
+
+.status-table .text-danger {
+  background-color: #fdf2f2;
+}
+
+.status-table .text-warning {
+  background-color: #fef9e7;
+}
+
+.status-table .text-primary {
+  background-color: #e3f2fd;
+}
+
+/* 공지사항 박스 스타일 */
+.notice-box {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notice-box .nav-link {
+  border-radius: 0;
+  color: #495057;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.3s ease;
+}
+
+.notice-box .nav-link:hover {
+  background-color: #f8f9fa;
+  color: #007bff;
+}
+
+.notice-box .nav-link:last-child {
+  border-bottom: none;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 991px) {
+  .summary-box .summary-box-value {
+    font-size: 1.5rem;
+  }
+  
+  .quick-link-item {
+    padding: 0.75rem 0.25rem;
+  }
+  
+  .quick-link-item i {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .summary-box {
+    padding: 1rem;
+  }
+  
+  .summary-box .summary-box-value {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  
+  .quick-link-item {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  .quick-link-item span {
+    font-size: 0.75rem;
+  }
+}
+
+/* 애니메이션 효과 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* 로딩 스피너 */
+.dashboard-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+} 
