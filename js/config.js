@@ -77,12 +77,18 @@ const MENU_CONFIG = {
       url: '#',
       order: 2
     },
-    { 
-      id: 'orders', 
-      name: '주문', 
+    {
+      id: 'orders',
+      name: '주문',
       icon: 'fas fa-shopping-cart',
-      url: '#',
-      order: 3
+      hasSubmenu: true,
+      order: 3,
+      submenu: [
+        { id: 'auto-order-register', name: '자동 주문 등록', url: '#', order: 1 },
+        { id: 'manual-order-register', name: '수동 주문 등록', url: '#', order: 2 },
+        { id: 'deleted-orders', name: '삭제 주문건', url: '#', order: 3 },
+        { id: 'archived-orders', name: '보관 주문건', url: '#', order: 4 }
+      ]
     },
     {
       id: 'inbound',

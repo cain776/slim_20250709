@@ -26,6 +26,10 @@ class PageManager {
     // 기본 페이지들 등록
     this.pageClasses.set('dashboard', DashboardPage);
     this.pageClasses.set('notice', NoticePage);
+    this.pageClasses.set('auto-order-register', AutoOrderRegisterPage);
+    this.pageClasses.set('manual-order-register', ManualOrderRegisterPage);
+    this.pageClasses.set('deleted-orders', DeletedOrdersPage);
+    this.pageClasses.set('archived-orders', ArchivedOrdersPage);
     this.pageClasses.set('inbound-history', InboundHistoryPage);
     this.pageClasses.set('inbound-register', InboundRegisterPage);
     this.pageClasses.set('outbound-history', OutboundHistoryPage);
@@ -393,6 +397,262 @@ class SettingsPage extends BasePage {
   }
 }
 
+// 주문 관련 페이지 클래스들
+class AutoOrderRegisterPage extends BasePage {
+  constructor(pageId) {
+    super(pageId, '자동 주문 등록');
+  }
+
+  async loadData() {
+    // 자동 주문 등록 데이터 로드
+    this.data = { orders: [] };
+  }
+
+  async render() {
+    const html = `
+      <section class="content p-3">
+        <div class="container-fluid">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title card-title-lg">자동 주문 등록</h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>주문 파일 업로드</label>
+                    <input type="file" class="form-control" accept=".xlsx,.xls,.csv">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>처리 방식</label>
+                    <select class="form-control">
+                      <option>즉시 처리</option>
+                      <option>예약 처리</option>
+                      <option>검토 후 처리</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <button class="btn btn-primary">자동 등록 시작</button>
+                  <button class="btn btn-secondary ml-2">미리보기</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+    
+    $('#main-content').html(html);
+  }
+}
+
+class ManualOrderRegisterPage extends BasePage {
+  constructor(pageId) {
+    super(pageId, '수동 주문 등록');
+  }
+
+  async loadData() {
+    // 수동 주문 등록 데이터 로드
+    this.data = { orders: [] };
+  }
+
+  async render() {
+    const html = `
+      <section class="content p-3">
+        <div class="container-fluid">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title card-title-lg">수동 주문 등록</h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>주문번호</label>
+                    <input type="text" class="form-control" placeholder="주문번호를 입력하세요">
+                  </div>
+                  <div class="form-group">
+                    <label>고객명</label>
+                    <input type="text" class="form-control" placeholder="고객명을 입력하세요">
+                  </div>
+                  <div class="form-group">
+                    <label>상품명</label>
+                    <input type="text" class="form-control" placeholder="상품명을 입력하세요">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>수량</label>
+                    <input type="number" class="form-control" placeholder="수량을 입력하세요">
+                  </div>
+                  <div class="form-group">
+                    <label>배송지</label>
+                    <textarea class="form-control" rows="3" placeholder="배송지를 입력하세요"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <button class="btn btn-primary">주문 등록</button>
+                  <button class="btn btn-secondary ml-2">초기화</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+    
+    $('#main-content').html(html);
+  }
+}
+
+class DeletedOrdersPage extends BasePage {
+  constructor(pageId) {
+    super(pageId, '삭제 주문건');
+  }
+
+  async loadData() {
+    // 삭제된 주문 데이터 로드
+    this.data = { deletedOrders: [] };
+  }
+
+  async render() {
+    const html = `
+      <section class="content p-3">
+        <div class="container-fluid">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title card-title-lg">삭제 주문건</h3>
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="주문번호로 검색">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" type="button">검색</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <select class="form-control">
+                    <option>전체 기간</option>
+                    <option>최근 1주일</option>
+                    <option>최근 1개월</option>
+                    <option>최근 3개월</option>
+                  </select>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>주문번호</th>
+                      <th>고객명</th>
+                      <th>상품명</th>
+                      <th>삭제일</th>
+                      <th>삭제사유</th>
+                      <th>작업</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colspan="6" class="text-center text-muted">삭제된 주문건이 없습니다.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+    
+    $('#main-content').html(html);
+  }
+}
+
+class ArchivedOrdersPage extends BasePage {
+  constructor(pageId) {
+    super(pageId, '보관 주문건');
+  }
+
+  async loadData() {
+    // 보관된 주문 데이터 로드
+    this.data = { archivedOrders: [] };
+  }
+
+  async render() {
+    const html = `
+      <section class="content p-3">
+        <div class="container-fluid">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title card-title-lg">보관 주문건</h3>
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="주문번호로 검색">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" type="button">검색</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <select class="form-control">
+                    <option>전체 기간</option>
+                    <option>최근 1개월</option>
+                    <option>최근 3개월</option>
+                    <option>최근 6개월</option>
+                    <option>최근 1년</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <select class="form-control">
+                    <option>전체 상태</option>
+                    <option>자동 보관</option>
+                    <option>수동 보관</option>
+                    <option>시스템 보관</option>
+                  </select>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>주문번호</th>
+                      <th>고객명</th>
+                      <th>상품명</th>
+                      <th>보관일</th>
+                      <th>보관사유</th>
+                      <th>작업</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colspan="6" class="text-center text-muted">보관된 주문건이 없습니다.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+    
+    $('#main-content').html(html);
+  }
+}
+
 // 페이지 관리자 싱글톤 인스턴스
 const pageManager = new PageManager();
 
@@ -401,6 +661,10 @@ window.PageManager = PageManager;
 window.pageManager = pageManager;
 window.DashboardPage = DashboardPage;
 window.NoticePage = NoticePage;
+window.AutoOrderRegisterPage = AutoOrderRegisterPage;
+window.ManualOrderRegisterPage = ManualOrderRegisterPage;
+window.DeletedOrdersPage = DeletedOrdersPage;
+window.ArchivedOrdersPage = ArchivedOrdersPage;
 window.InboundHistoryPage = InboundHistoryPage;
 window.InboundRegisterPage = InboundRegisterPage;
 window.OutboundHistoryPage = OutboundHistoryPage;
