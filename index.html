@@ -27,13 +27,48 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
+      <li class="nav-item search-box-item">
+        <form class="form-inline ml-3">
+          <div class="input-group input-group-sm">
+            <input class="form-control form-control-navbar" type="search" 
+                   placeholder="복수화물 조회" aria-label="복수화물 조회"
+                   style="width: 200px;" id="multiTrackSearchInput">
+          </div>
+        </form>
+      </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-          <a class="nav-link" href="#" data-toggle="modal" data-target="#multiTrackModal" role="button" title="복수화물 조회">
-              <i class="fas fa-search"></i>
+      <!-- 언어선택 드롭다운 -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-globe"></i>
+          <span id="current-language" class="d-none d-md-inline ml-1">한국어</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="languageDropdown">
+          <a class="dropdown-item language-item" href="#" onclick="changeLanguage('ko')">
+            <div class="language-item-content">
+              <span class="flag-emoji">🇰🇷</span>
+              <span class="language-text">한국어</span>
+              <i class="fas fa-check text-success language-check" id="check-ko"></i>
+            </div>
           </a>
+          <a class="dropdown-item language-item" href="#" onclick="changeLanguage('ja')">
+            <div class="language-item-content">
+              <span class="flag-emoji">🇯🇵</span>
+              <span class="language-text">日本語</span>
+              <i class="fas fa-check text-success language-check d-none" id="check-ja"></i>
+            </div>
+          </a>
+          <a class="dropdown-item language-item" href="#" onclick="changeLanguage('en')">
+            <div class="language-item-content">
+              <span class="flag-emoji">🇺🇸</span>
+              <span class="language-text">English</span>
+              <i class="fas fa-check text-success language-check d-none" id="check-en"></i>
+            </div>
+          </a>
+        </div>
       </li>
+
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
@@ -299,6 +334,7 @@
 <script src="js/sidebar.js"></script>
 <script src="js/dashboard.js"></script>
 <script src="js/banner-controller.js"></script>
+<script src="js/language-selector.js"></script>
 
 <!-- LNB 제어 함수들 -->
 <script>
@@ -436,6 +472,13 @@ $(document).ready(function() {
   setTimeout(() => {
     showToast('💡 안내', 'Ctrl + L 키로 LNB 제어판을 열 수 있습니다.', 'info');
   }, 2000);
+  
+  // 복수화물 조회 검색 박스 포커스 시 모달 열기
+  $('#multiTrackSearchInput').on('focus', function() {
+    $('#multiTrackModal').modal('show');
+    // 포커스를 제거하여 반복 동작 방지
+    $(this).blur();
+  });
 });
 </script>
 </body>

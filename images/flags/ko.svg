@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="16" viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg">
+  <!-- 태극기 배경 -->
+  <rect width="24" height="16" fill="#ffffff" stroke="#ddd" stroke-width="0.5"/>
+  
+  <!-- 태극 원 (간단한 반원으로 표현) -->
+  <circle cx="12" cy="8" r="3" fill="#cd212a"/>
+  <path d="M 12 5 A 3 3 0 0 1 12 11 A 1.5 1.5 0 0 0 12 8 A 1.5 1.5 0 0 1 12 5 Z" fill="#0047a0"/>
+  
+  <!-- 간단한 사괘 표현 -->
+  <g fill="#000000">
+    <!-- 건 (우상단) -->
+    <rect x="17" y="3" width="3" height="0.5"/>
+    <rect x="17" y="4" width="3" height="0.5"/>
+    <rect x="17" y="5" width="3" height="0.5"/>
+    
+    <!-- 곤 (좌하단) -->
+    <rect x="4" y="10" width="1.2" height="0.5"/>
+    <rect x="5.8" y="10" width="1.2" height="0.5"/>
+    <rect x="4" y="11" width="1.2" height="0.5"/>
+    <rect x="5.8" y="11" width="1.2" height="0.5"/>
+    <rect x="4" y="12" width="1.2" height="0.5"/>
+    <rect x="5.8" y="12" width="1.2" height="0.5"/>
+  </g>
+</svg> 

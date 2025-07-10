@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24" height="16" viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg">
+  <!-- 일본 국기 배경 -->
+  <rect width="24" height="16" fill="#ffffff" stroke="#ddd" stroke-width="0.5"/>
+  
+  <!-- 일본 국기 빨간 원 -->
+  <circle cx="12" cy="8" r="3.5" fill="#bc002d"/>
+</svg> 
