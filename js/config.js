@@ -72,17 +72,24 @@ const MENU_CONFIG = {
     },
     { 
       id: 'notice', 
-      name: '공지사항', 
+      name: '공지', 
       icon: 'fas fa-bell',
       url: '#',
       order: 2
     },
+    { 
+      id: 'orders', 
+      name: '주문', 
+      icon: 'fas fa-shopping-cart',
+      url: '#',
+      order: 3
+    },
     {
       id: 'inbound',
-      name: '입고 관리',
+      name: '입고',
       icon: 'fas fa-box-open',
       hasSubmenu: true,
-      order: 3,
+      order: 4,
       submenu: [
         { id: 'inbound-history', name: '입고 내역', url: '#', order: 1 },
         { id: 'inbound-register', name: '입고 등록', url: '#', order: 2 }
@@ -90,28 +97,42 @@ const MENU_CONFIG = {
     },
     {
       id: 'outbound',
-      name: '출고 관리',
+      name: '출고',
       icon: 'fas fa-paper-plane',
       hasSubmenu: true,
-      order: 4,
+      order: 5,
       submenu: [
         { id: 'outbound-history', name: '출고 내역', url: '#', order: 1 },
         { id: 'outbound-register', name: '출고 등록', url: '#', order: 2 }
       ]
     },
     { 
-      id: 'statistics', 
-      name: '통계', 
-      icon: 'fas fa-chart-bar',
+      id: 'inventory', 
+      name: '재고', 
+      icon: 'fas fa-warehouse',
       url: '#',
-      order: 5
+      order: 6
+    },
+    { 
+      id: 'products', 
+      name: '상품', 
+      icon: 'fas fa-box',
+      url: '#',
+      order: 7
+    },
+    { 
+      id: 'shipping', 
+      name: '배송', 
+      icon: 'fas fa-truck',
+      url: '#',
+      order: 8
     },
     { 
       id: 'settings', 
       name: '설정', 
       icon: 'fas fa-cog',
       url: '#',
-      order: 6
+      order: 9
     }
   ]
 };

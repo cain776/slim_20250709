@@ -47,13 +47,12 @@
       </li>
        <li class="nav-item dropdown user-menu">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-          <img src="https://placehold.co/160x160/007bff/ffffff?text=U" class="user-image img-circle elevation-2" alt="User Image">
-          <span class="d-none d-md-inline">사용자</span>
+          <img src="https://placehold.co/184x184/007bff/ffffff?text=T" class="user-image img-circle elevation-2" alt="User Image">
         </a>
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <li class="user-header bg-primary">
-            <img src="https://placehold.co/160x160/007bff/ffffff?text=U" class="img-circle elevation-2" alt="User Image">
-            <p>사용자<small>Member since Nov. 2023</small></p>
+            <img src="https://placehold.co/184x184/007bff/ffffff?text=T" class="img-circle elevation-2" alt="User Image">
+            <p>티핏<small>Member since Jan. 2025</small></p>
           </li>
           <li class="user-footer">
             <a href="#" class="btn btn-default btn-flat">프로필</a>
@@ -83,24 +82,30 @@
           <li class="nav-item">
             <a href="#" class="nav-link" data-page="notice">
               <i class="nav-icon fas fa-bell"></i>
-              <p>공지사항</p>
+              <p>공지</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-page="orders">
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>주문</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-box-open"></i>
-              <p>입고 관리<i class="right fas fa-angle-left"></i></p>
+              <p>입고<i class="right fas fa-angle-left"></i></p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="#" class="nav-link" data-page="inbound-history">
-                  <i class="far fa-circle nav-icon"></i>
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
                   <p>입고 내역</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link" data-page="inbound-register">
-                  <i class="far fa-circle nav-icon"></i>
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
                   <p>입고 등록</p>
                 </a>
               </li>
@@ -109,27 +114,39 @@
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-paper-plane"></i>
-              <p>출고 관리<i class="right fas fa-angle-left"></i></p>
+              <p>출고<i class="right fas fa-angle-left"></i></p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="#" class="nav-link" data-page="outbound-history">
-                  <i class="far fa-circle nav-icon"></i>
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
                   <p>출고 내역</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link" data-page="outbound-register">
-                  <i class="far fa-circle nav-icon"></i>
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
                   <p>출고 등록</p>
                 </a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link" data-page="statistics">
-              <i class="nav-icon fas fa-chart-bar"></i>
-              <p>통계</p>
+            <a href="#" class="nav-link" data-page="inventory">
+              <i class="nav-icon fas fa-warehouse"></i>
+              <p>재고</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-page="products">
+              <i class="nav-icon fas fa-box"></i>
+              <p>상품</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-page="shipping">
+              <i class="nav-icon fas fa-truck"></i>
+              <p>배송</p>
             </a>
           </li>
           <li class="nav-item">
@@ -199,7 +216,7 @@
         <label class="font-weight-bold">메뉴 제어</label>
         <div class="btn-group-vertical d-block">
           <button class="btn btn-sm btn-success mb-1" onclick="addTestMenu()">테스트 메뉴 추가</button>
-          <button class="btn btn-sm btn-warning mb-1" onclick="toggleNoticeMenu()">공지사항 토글</button>
+          <button class="btn btn-sm btn-warning mb-1" onclick="toggleNoticeMenu()">공지 토글</button>
           <button class="btn btn-sm btn-info mb-1" onclick="addBadgeToStats()">통계에 뱃지 추가</button>
         </div>
       </div>
@@ -312,12 +329,12 @@ function addTestMenu() {
   showToast('성공', '테스트 메뉴가 추가되었습니다.', 'success');
 }
 
-// 공지사항 메뉴 토글
+// 공지 메뉴 토글
 function toggleNoticeMenu() {
   lnbController.toggleMenuItem('notice');
   
   const isVisible = lnbController.menuElement.find('[data-page="notice"]').closest('.nav-item').is(':visible');
-  showToast('알림', `공지사항 메뉴가 ${isVisible ? '표시' : '숨김'}되었습니다.`, 'info');
+  showToast('알림', `공지 메뉴가 ${isVisible ? '표시' : '숨김'}되었습니다.`, 'info');
 }
 
 // 통계 메뉴에 뱃지 추가

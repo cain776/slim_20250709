@@ -186,7 +186,7 @@ class DataService {
   }
 
   /**
-   * 공지사항 데이터 가져오기
+   * 공지 데이터 가져오기
    */
   async getNoticesData(page = 1, limit = 10) {
     const cacheKey = `notices_${page}_${limit}`;
@@ -214,7 +214,7 @@ class DataService {
       
       return data;
     } catch (error) {
-      console.error('공지사항 데이터 로드 실패:', error);
+      console.error('공지 데이터 로드 실패:', error);
       return {
         notices: SAMPLE_DATA.notices.slice(0, limit),
         totalCount: SAMPLE_DATA.notices.length,

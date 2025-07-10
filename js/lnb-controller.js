@@ -337,7 +337,7 @@ class LNBController {
     const subItemsHtml = menuItem.subItems.map(subItem => `
       <li class="nav-item">
         <a href="#" class="nav-link" data-page="${subItem.pageId}">
-          <i class="far fa-circle nav-icon"></i>
+          <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
           <p>${subItem.text}</p>
         </a>
       </li>

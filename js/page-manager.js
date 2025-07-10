@@ -341,7 +341,7 @@ class DashboardPage extends BasePage {
 
 class NoticePage extends BasePage {
   constructor(pageId) {
-    super(pageId, '공지사항');
+    super(pageId, '공지');
   }
 
   async loadData() {
