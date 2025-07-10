@@ -262,6 +262,22 @@ const Config = {
   }
 };
 
+// 파일 크기 모니터링 설정
+const MONITORING_CONFIG = {
+  INDEX_FILE_WARNING_SIZE: 50000,    // 50KB 경고
+  INDEX_FILE_CRITICAL_SIZE: 100000,  // 100KB 위험
+  INDEX_FILE_MAX_LINES: 1000,        // 1000줄 최대
+  
+  // 분리 권장 임계값
+  REFACTORING_THRESHOLDS: {
+    fileSize: 100000,      // 100KB 이상
+    lineCount: 2000,       // 2000줄 이상
+    teamSize: 3,           // 개발팀 3명 이상
+    menuCount: 20,         // 메뉴 20개 이상
+    modalCount: 10         // 모달 10개 이상
+  }
+};
+
 // 전역 스코프에 노출
 window.Config = Config;
 window.APP_CONFIG = APP_CONFIG;

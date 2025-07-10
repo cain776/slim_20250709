@@ -559,3 +559,103 @@ const Utils = {
 
 // 전역 스코프에 노출
 window.Utils = Utils; 
+
+/**
+ * 파일 구조 모니터링 유틸리티
+ */
+const StructureMonitor = {
+  
+  /**
+   * 현재 프로젝트 구조 분석
+   */
+  analyzeProjectStructure: function() {
+    const analysis = {
+      timestamp: new Date().toISOString(),
+      menuCount: 0,
+      modalCount: 0,
+      estimatedIndexSize: 0,
+      warnings: [],
+      recommendations: []
+    };
+    
+    // 메뉴 개수 계산
+    const menuItems = document.querySelectorAll('#lnb-menu .nav-link[data-page]');
+    analysis.menuCount = menuItems.length;
+    
+    // 모달 개수 계산
+    const modals = document.querySelectorAll('.modal');
+    analysis.modalCount = modals.length;
+    
+    // 경고 및 권장사항 생성
+    const thresholds = MONITORING_CONFIG.REFACTORING_THRESHOLDS;
+    
+    if (analysis.menuCount > thresholds.menuCount * 0.8) {
+      analysis.warnings.push(`메뉴 개수가 ${analysis.menuCount}개입니다. ${thresholds.menuCount}개 도달 시 구조 개선 검토 필요`);
+    }
+    
+    if (analysis.modalCount > thresholds.modalCount * 0.8) {
+      analysis.warnings.push(`모달 개수가 ${analysis.modalCount}개입니다. ${thresholds.modalCount}개 도달 시 분리 권장`);
+    }
+    
+    // 권장사항
+    if (analysis.menuCount > 10) {
+      analysis.recommendations.push('메뉴 그룹화 또는 카테고리 분류 검토');
+    }
+    
+    if (analysis.modalCount > 5) {
+      analysis.recommendations.push('모달 컴포넌트 분리 검토');
+    }
+    
+    return analysis;
+  },
+  
+  /**
+   * 구조 분석 결과 출력
+   */
+  logStructureAnalysis: function() {
+    const analysis = this.analyzeProjectStructure();
+    
+    console.group('📊 프로젝트 구조 분석');
+    console.log('📅 분석 시점:', analysis.timestamp);
+    console.log('📋 메뉴 개수:', analysis.menuCount);
+    console.log('🔧 모달 개수:', analysis.modalCount);
+    
+    if (analysis.warnings.length > 0) {
+      console.group('⚠️ 경고사항');
+      analysis.warnings.forEach(warning => console.warn(warning));
+      console.groupEnd();
+    }
+    
+    if (analysis.recommendations.length > 0) {
+      console.group('💡 권장사항');
+      analysis.recommendations.forEach(rec => console.info(rec));
+      console.groupEnd();
+    }
+    
+    console.groupEnd();
+    
+    return analysis;
+  },
+  
+  /**
+   * 리팩토링 필요 여부 판단
+   */
+  needsRefactoring: function() {
+    const analysis = this.analyzeProjectStructure();
+    const thresholds = MONITORING_CONFIG.REFACTORING_THRESHOLDS;
+    
+    const criticalCount = [
+      analysis.menuCount >= thresholds.menuCount,
+      analysis.modalCount >= thresholds.modalCount,
+    ].filter(Boolean).length;
+    
+    return {
+      immediate: criticalCount >= 2,
+      planning: criticalCount >= 1,
+      analysis: analysis
+    };
+  }
+};
+
+// 전역 스코프에 노출
+window.StructureMonitor = StructureMonitor; 

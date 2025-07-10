@@ -412,9 +412,125 @@ class AutoOrderRegisterPage extends BasePage {
     const html = `
       <section class="content p-3">
         <div class="container-fluid">
-          <!-- 검색 영역 -->
+          <!-- 자동 주문 등록 영역 (세로 한줄 배치) -->
           <div class="card mb-3">
-            <div class="card-body py-3">
+            <div class="card-header">
+              <h3 class="card-title card-title-lg">자동 주문 등록</h3>
+            </div>
+            <div class="card-body">
+              <div class="function-cards-container">
+                <div class="function-card-wrapper">
+                  <div class="function-card text-center p-2 border rounded">
+                    <div class="function-icon mb-1">
+                      <i class="fas fa-file-upload fa-lg text-primary"></i>
+                    </div>
+                    <h5 class="function-title mb-1">파일 업로드</h5>
+                    <p class="function-desc text-muted small">Excel, CSV 파일 업로드</p>
+                  </div>
+                </div>
+                
+                <div class="function-card-wrapper">
+                  <div class="function-card text-center p-2 border rounded">
+                    <div class="function-icon mb-1">
+                      <i class="fas fa-edit fa-lg text-success"></i>
+                    </div>
+                    <h5 class="function-title mb-1">데이터 편집</h5>
+                    <p class="function-desc text-muted small">주문 정보 수정 및 검증</p>
+                  </div>
+                </div>
+                
+                <div class="function-card-wrapper">
+                  <div class="function-card text-center p-2 border rounded">
+                    <div class="function-icon mb-1">
+                      <i class="fas fa-check-circle fa-lg text-info"></i>
+                    </div>
+                    <h5 class="function-title mb-1">데이터 검증</h5>
+                    <p class="function-desc text-muted small">필수 항목 및 형식 검증</p>
+                  </div>
+                </div>
+                
+                <div class="function-card-wrapper">
+                  <div class="function-card text-center p-2 border rounded">
+                    <div class="function-icon mb-1">
+                      <i class="fas fa-clock fa-lg text-warning"></i>
+                    </div>
+                    <h5 class="function-title mb-1">일정 관리</h5>
+                    <p class="function-desc text-muted small">예약 등록 및 일정 설정</p>
+                  </div>
+                </div>
+                
+                <div class="function-card-wrapper">
+                  <div class="function-card text-center p-2 border rounded">
+                    <div class="function-icon mb-1">
+                      <i class="fas fa-bell fa-lg text-danger"></i>
+                    </div>
+                    <h5 class="function-title mb-1">알림 설정</h5>
+                    <p class="function-desc text-muted small">이메일, SMS 알림 설정</p>
+                  </div>
+                </div>
+                
+                <div class="function-card-wrapper">
+                  <div class="function-card text-center p-2 border rounded">
+                    <div class="function-icon mb-1">
+                      <i class="fas fa-chart-line fa-lg text-secondary"></i>
+                    </div>
+                    <h5 class="function-title mb-1">진행 상황</h5>
+                    <p class="function-desc text-muted small">처리 상태 및 진행률 확인</p>
+                  </div>
+                </div>
+                
+                <div class="function-card-wrapper">
+                  <div class="function-card text-center p-2 border rounded">
+                    <div class="function-icon mb-1">
+                      <i class="fas fa-history fa-lg text-primary"></i>
+                    </div>
+                    <h5 class="function-title mb-1">처리 이력</h5>
+                    <p class="function-desc text-muted small">등록 이력 및 로그 확인</p>
+                  </div>
+                </div>
+                
+                <div class="function-card-wrapper">
+                  <div class="function-card text-center p-2 border rounded">
+                    <div class="function-icon mb-1">
+                      <i class="fas fa-download fa-lg text-success"></i>
+                    </div>
+                    <h5 class="function-title mb-1">템플릿 다운로드</h5>
+                    <p class="function-desc text-muted small">Excel 템플릿 다운로드</p>
+                  </div>
+                </div>
+                
+                <div class="function-card-wrapper">
+                  <div class="function-card text-center p-2 border rounded">
+                    <div class="function-icon mb-1">
+                      <i class="fas fa-sync-alt fa-lg text-info"></i>
+                    </div>
+                    <h5 class="function-title mb-1">일괄 처리</h5>
+                    <p class="function-desc text-muted small">대량 주문 일괄 등록</p>
+                  </div>
+                </div>
+                
+                <div class="function-card-wrapper">
+                  <div class="function-card text-center p-2 border rounded" data-function="search">
+                    <div class="function-icon mb-1">
+                      <i class="fas fa-search fa-lg text-purple"></i>
+                    </div>
+                    <h5 class="function-title mb-1">검색 조건</h5>
+                    <p class="function-desc text-muted small">상세 검색 조건 설정</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 검색 영역 (숨겨진 상태) -->
+          <div class="card mb-3" id="searchArea" style="display: none;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0">검색 조건</h5>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="closeSearchArea">
+                <i class="fas fa-times"></i> 닫기
+              </button>
+            </div>
+            <div class="card-body py-3" id="searchContent">
               <div class="row align-items-end">
                 <!-- 첫 번째 줄 -->
                 <div class="col-md-2 col-sm-6 mb-2">
@@ -492,90 +608,6 @@ class AutoOrderRegisterPage extends BasePage {
             </div>
           </div>
 
-          <!-- 자동 등록 설정 영역 -->
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title card-title-lg">자동 주문 등록</h3>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label class="font-weight-bold">주문 파일 업로드</label>
-                    <div class="custom-file">
-                      <input type="file" class="custom-file-input" id="orderFile" accept=".xlsx,.xls,.csv">
-                      <label class="custom-file-label" for="orderFile">파일을 선택하세요</label>
-                    </div>
-                    <small class="form-text text-muted">지원 형식: Excel (.xlsx, .xls), CSV (.csv)</small>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label class="font-weight-bold">처리 방식</label>
-                    <select class="form-control">
-                      <option value="immediate">즉시 처리</option>
-                      <option value="scheduled">예약 처리</option>
-                      <option value="review">검토 후 처리</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label class="font-weight-bold">처리 우선순위</label>
-                    <select class="form-control">
-                      <option value="normal">보통</option>
-                      <option value="high">높음</option>
-                      <option value="urgent">긴급</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="font-weight-bold">예약 처리 시간</label>
-                    <div class="row">
-                      <div class="col-6">
-                        <input type="date" class="form-control" placeholder="날짜 선택">
-                      </div>
-                      <div class="col-6">
-                        <input type="time" class="form-control" placeholder="시간 선택">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="font-weight-bold">알림 설정</label>
-                    <div class="form-check-inline">
-                      <input class="form-check-input" type="checkbox" id="emailNotification">
-                      <label class="form-check-label" for="emailNotification">이메일 알림</label>
-                    </div>
-                    <div class="form-check-inline">
-                      <input class="form-check-input" type="checkbox" id="smsNotification">
-                      <label class="form-check-label" for="smsNotification">SMS 알림</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="row">
-                <div class="col-12">
-                  <button class="btn btn-primary btn-lg mr-2">
-                    <i class="fas fa-upload mr-2"></i>자동 등록 시작
-                  </button>
-                  <button class="btn btn-outline-primary btn-lg mr-2">
-                    <i class="fas fa-eye mr-2"></i>미리보기
-                  </button>
-                  <button class="btn btn-outline-secondary btn-lg">
-                    <i class="fas fa-download mr-2"></i>템플릿 다운로드
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <!-- 처리 결과 영역 -->
           <div class="card mt-3">
             <div class="card-header">
@@ -624,8 +656,125 @@ class AutoOrderRegisterPage extends BasePage {
           font-size: 0.875rem;
         }
         
-        .custom-file-label::after {
-          content: "찾아보기";
+        .function-cards-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          padding: 0;
+          margin: 0;
+          background: transparent;
+          border: none;
+          width: 100%;
+          align-items: stretch;
+        }
+        
+        .function-card-wrapper {
+          flex: 1;
+          min-width: 0;
+          max-width: calc(20% - 9.6px);
+        }
+        
+        .function-card {
+          transition: all 0.3s ease;
+          cursor: pointer;
+          background-color: #fff;
+          height: 100px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          width: 100%;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e9ecef;
+        }
+        
+        .function-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+          border-color: #007bff !important;
+        }
+        
+        .function-icon {
+          transition: transform 0.3s ease;
+        }
+        
+        .function-card:hover .function-icon {
+          transform: scale(1.15);
+        }
+        
+        .function-title {
+          font-weight: 600;
+          color: #333;
+          font-size: 0.85rem;
+        }
+        
+        .function-desc {
+          font-size: 0.65rem;
+          line-height: 1.2;
+          margin-bottom: 0;
+        }
+        
+        .text-purple {
+          color: #7c3aed !important;
+        }
+        
+        .function-card[data-function="search"] {
+          border-color: #7c3aed;
+          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .function-card[data-function="search"]:hover {
+          border-color: #7c3aed !important;
+          box-shadow: 0 6px 20px rgba(124, 58, 237, 0.25);
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 1400px) {
+          .function-card-wrapper {
+            max-width: calc(25% - 9px);
+          }
+        }
+        
+        @media (max-width: 1200px) {
+          .function-card-wrapper {
+            max-width: calc(33.333% - 8px);
+          }
+        }
+        
+        @media (max-width: 768px) {
+          .function-card-wrapper {
+            max-width: calc(50% - 6px);
+          }
+          
+          .function-card {
+            height: 90px;
+          }
+          
+          .function-title {
+            font-size: 0.8rem;
+          }
+          
+          .function-desc {
+            font-size: 0.6rem;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .function-card-wrapper {
+            max-width: 100%;
+          }
+          
+          .function-card {
+            height: 80px;
+          }
+          
+          .function-title {
+            font-size: 0.75rem;
+          }
+          
+          .function-desc {
+            font-size: 0.55rem;
+          }
         }
         
         .card {
@@ -640,15 +789,40 @@ class AutoOrderRegisterPage extends BasePage {
         .progress {
           height: 0.5rem;
         }
+        
+        #searchArea {
+          animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
       </style>
     `;
     
     $('#main-content').html(html);
     
-    // 파일 업로드 라벨 업데이트
-    $('#orderFile').on('change', function() {
-      const fileName = $(this).val().split('\\').pop();
-      $(this).next('.custom-file-label').html(fileName || '파일을 선택하세요');
+    // 검색 조건 카드 클릭 시 검색 영역 표시
+    $('.function-card[data-function="search"]').on('click', function() {
+      $('#searchArea').fadeIn(300);
+      $('html, body').animate({
+        scrollTop: $('#searchArea').offset().top - 100
+      }, 300);
+    });
+    
+    // 검색 영역 닫기 버튼
+    $('#closeSearchArea').on('click', function() {
+      $('#searchArea').fadeOut(300);
+    });
+    
+    // 일반 기능 카드 클릭 이벤트
+    $('.function-card:not([data-function="search"])').on('click', function() {
+      const title = $(this).find('.function-title').text();
+      const desc = $(this).find('.function-desc').text();
+      
+      // 간단한 알림 (나중에 모달로 변경 가능)
+      alert(`${title}\n\n${desc}\n\n이 기능은 개발 중입니다.`);
     });
     
     // 날짜 버튼 이벤트
