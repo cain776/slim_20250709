@@ -412,42 +412,264 @@ class AutoOrderRegisterPage extends BasePage {
     const html = `
       <section class="content p-3">
         <div class="container-fluid">
+          <!-- 검색 영역 -->
+          <div class="card mb-3">
+            <div class="card-body py-3">
+              <div class="row align-items-end">
+                <!-- 첫 번째 줄 -->
+                <div class="col-md-2 col-sm-6 mb-2">
+                  <label class="form-label text-sm text-muted mb-1">소팅 옵션</label>
+                  <select class="form-control form-control-sm">
+                    <option>등록일순</option>
+                    <option>주문번호순</option>
+                    <option>고객명순</option>
+                    <option>상태순</option>
+                  </select>
+                </div>
+                <div class="col-md-2 col-sm-6 mb-2">
+                  <label class="form-label text-sm text-muted mb-1">API 유형</label>
+                  <select class="form-control form-control-sm">
+                    <option>전체</option>
+                    <option>주문 API</option>
+                    <option>재고 API</option>
+                    <option>배송 API</option>
+                  </select>
+                </div>
+                <div class="col-md-2 col-sm-6 mb-2">
+                  <label class="form-label text-sm text-muted mb-1">검색 시작일</label>
+                  <input type="date" class="form-control form-control-sm" value="2025-01-13">
+                </div>
+                <div class="col-md-2 col-sm-6 mb-2">
+                  <label class="form-label text-sm text-muted mb-1">검색 종료일</label>
+                  <input type="date" class="form-control form-control-sm" value="2025-01-13">
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-secondary">전일</button>
+                    <button type="button" class="btn btn-outline-secondary">당일</button>
+                    <button type="button" class="btn btn-primary">금일</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row align-items-end mt-2">
+                <!-- 두 번째 줄 -->
+                <div class="col-md-2 col-sm-6 mb-2">
+                  <label class="form-label text-sm text-muted mb-1">처리 상태</label>
+                  <select class="form-control form-control-sm">
+                    <option>전체</option>
+                    <option>대기중</option>
+                    <option>처리중</option>
+                    <option>완료</option>
+                    <option>실패</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <label class="form-label text-sm text-muted mb-1">주문 정보 검색</label>
+                  <div class="input-group input-group-sm">
+                    <div class="input-group-prepend">
+                      <select class="form-control">
+                        <option>주문번호</option>
+                        <option>고객명</option>
+                        <option>상품명</option>
+                        <option>파일명</option>
+                      </select>
+                    </div>
+                    <input type="text" class="form-control" placeholder="키워드를 입력하세요">
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="btn-group btn-group-sm ml-2" role="group">
+                    <button type="button" class="btn btn-outline-secondary">
+                      <i class="fas fa-redo mr-1"></i>초기화
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                      <i class="fas fa-search mr-1"></i>조회
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 자동 등록 설정 영역 -->
           <div class="card">
             <div class="card-header">
               <h3 class="card-title card-title-lg">자동 주문 등록</h3>
             </div>
             <div class="card-body">
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <div class="form-group">
-                    <label>주문 파일 업로드</label>
-                    <input type="file" class="form-control" accept=".xlsx,.xls,.csv">
+                    <label class="font-weight-bold">주문 파일 업로드</label>
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input" id="orderFile" accept=".xlsx,.xls,.csv">
+                      <label class="custom-file-label" for="orderFile">파일을 선택하세요</label>
+                    </div>
+                    <small class="form-text text-muted">지원 형식: Excel (.xlsx, .xls), CSV (.csv)</small>
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <div class="form-group">
-                    <label>처리 방식</label>
+                    <label class="font-weight-bold">처리 방식</label>
                     <select class="form-control">
-                      <option>즉시 처리</option>
-                      <option>예약 처리</option>
-                      <option>검토 후 처리</option>
+                      <option value="immediate">즉시 처리</option>
+                      <option value="scheduled">예약 처리</option>
+                      <option value="review">검토 후 처리</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="font-weight-bold">처리 우선순위</label>
+                    <select class="form-control">
+                      <option value="normal">보통</option>
+                      <option value="high">높음</option>
+                      <option value="urgent">긴급</option>
                     </select>
                   </div>
                 </div>
               </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="font-weight-bold">예약 처리 시간</label>
+                    <div class="row">
+                      <div class="col-6">
+                        <input type="date" class="form-control" placeholder="날짜 선택">
+                      </div>
+                      <div class="col-6">
+                        <input type="time" class="form-control" placeholder="시간 선택">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="font-weight-bold">알림 설정</label>
+                    <div class="form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="emailNotification">
+                      <label class="form-check-label" for="emailNotification">이메일 알림</label>
+                    </div>
+                    <div class="form-check-inline">
+                      <input class="form-check-input" type="checkbox" id="smsNotification">
+                      <label class="form-check-label" for="smsNotification">SMS 알림</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
               <div class="row">
                 <div class="col-12">
-                  <button class="btn btn-primary">자동 등록 시작</button>
-                  <button class="btn btn-secondary ml-2">미리보기</button>
+                  <button class="btn btn-primary btn-lg mr-2">
+                    <i class="fas fa-upload mr-2"></i>자동 등록 시작
+                  </button>
+                  <button class="btn btn-outline-primary btn-lg mr-2">
+                    <i class="fas fa-eye mr-2"></i>미리보기
+                  </button>
+                  <button class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-download mr-2"></i>템플릿 다운로드
+                  </button>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 처리 결과 영역 -->
+          <div class="card mt-3">
+            <div class="card-header">
+              <h5 class="card-title mb-0">처리 결과</h5>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>파일명</th>
+                      <th>업로드 시간</th>
+                      <th>처리 상태</th>
+                      <th>성공/전체</th>
+                      <th>진행률</th>
+                      <th>작업</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                        처리된 파일이 없습니다.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      <style>
+        .form-label.text-sm {
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+        
+        .btn-group-sm .btn {
+          font-size: 0.875rem;
+          padding: 0.375rem 0.75rem;
+        }
+        
+        .input-group-sm .form-control {
+          font-size: 0.875rem;
+        }
+        
+        .custom-file-label::after {
+          content: "찾아보기";
+        }
+        
+        .card {
+          box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .table-hover tbody tr:hover {
+          background-color: rgba(0, 123, 255, 0.05);
+        }
+        
+        .progress {
+          height: 0.5rem;
+        }
+      </style>
     `;
     
     $('#main-content').html(html);
+    
+    // 파일 업로드 라벨 업데이트
+    $('#orderFile').on('change', function() {
+      const fileName = $(this).val().split('\\').pop();
+      $(this).next('.custom-file-label').html(fileName || '파일을 선택하세요');
+    });
+    
+    // 날짜 버튼 이벤트
+    $('.btn-group .btn').on('click', function() {
+      $(this).siblings().removeClass('btn-primary').addClass('btn-outline-secondary');
+      $(this).removeClass('btn-outline-secondary').addClass('btn-primary');
+      
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      const formatDate = (date) => date.toISOString().split('T')[0];
+      
+      if ($(this).text() === '전일') {
+        $('input[type="date"]').eq(0).val(formatDate(yesterday));
+        $('input[type="date"]').eq(1).val(formatDate(yesterday));
+      } else if ($(this).text() === '당일' || $(this).text() === '금일') {
+        $('input[type="date"]').eq(0).val(formatDate(today));
+        $('input[type="date"]').eq(1).val(formatDate(today));
+      }
+    });
   }
 }
 
