@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입고 목록 시스템</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; }
+        .table-header { background-color: #f1f5f9; }
+        .tab-active { border-color: #0ea5e9; color: #0ea5e9; font-weight: 600; }
+        .tab-inactive { border-color: transparent; color: #64748b; }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            bottom: 0;
+            color: transparent;
+            cursor: pointer;
+            height: auto;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: auto;
+        }
+        .filter-item {
+            height: 38px;
+        }
+        .floating-label-group {
+            position: relative;
+        }
+        .floating-label {
+            position: absolute;
+            top: 50%;
+            left: 0.75rem;
+            transform: translateY(-50%);
+            transition: all 0.2s ease-in-out;
+            pointer-events: none;
+            color: #9ca3af;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            background-color: white;
+        }
+        .floating-select:focus + .floating-label,
+        .floating-select.has-value + .floating-label {
+            top: 0;
+            left: 0.5rem;
+            transform: translateY(-50%) scale(0.85);
+            color: #0ea5e9;
+            padding: 0 0.25rem;
+        }
+         .floating-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+        .floating-select option[value=""] {
+            display: none;
+        }
+        .memo-cell {
+            cursor: text;
+        }
+        .download-dropdown {
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+    <div id="app-container" class="p-4 sm:p-6 lg:p-8 max-w-full mx-auto">
+        <header class="mb-6">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-2xl font-bold text-slate-900">입고목록</h1>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300 hover:text-yellow-400 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                </svg>
+                <div class="flex items-center space-x-2 text-sm text-slate-500">
+                    <span>입고</span>
+                    <span class="font-bold">&gt;</span>
+                    <span>입고목록</span>
+                </div>
+            </div>
+            <div class="mt-4 border-b border-slate-200">
+                <nav class="-mb-px flex space-x-6" id="main-tabs">
+                    <button data-tab="list" class="py-3 px-1 border-b-2 tab-active">목록관리</button>
+                    <button data-tab="manual" class="py-3 px-1 border-b-2 tab-inactive">메뉴얼</button>
+                </nav>
+            </div>
+        </header>
+
+        <div id="list-view">
+            <main class="space-y-6">
+                 <div class="bg-white rounded-lg shadow p-6">
+                    <div class="space-y-4">
+                        <!-- Filter Row 1 -->
+                        <div class="flex flex-wrap items-center gap-4">
+                            <div class="relative floating-label-group filter-item">
+                                <select class="w-40 p-2 border border-slate-300 rounded-md text-sm h-full floating-select">
+                                     <option value="" selected></option>
+                                     <option value="all">전체</option>
+                                     <option value="seller1">파파레서피_Cox10</option>
+                                </select>
+                                <label class="floating-label">셀러 선택</label>
+                            </div>
+                           <div class="relative floating-label-group filter-item">
+                                <select class="w-40 p-2 border border-slate-300 rounded-md text-sm h-full floating-select">
+                                    <option value="" selected></option>
+                                    <option value="all">전체</option>
+                                    <option value="center1">인천1센터</option>
+                                </select>
+                                <label class="floating-label">입고센터 선택</label>
+                            </div>
+                            <div class="relative floating-label-group filter-item">
+                                <select class="w-40 p-2 border border-slate-300 rounded-md text-sm h-full floating-select">
+                                     <option value="" selected></option>
+                                     <option value="all">전체</option>
+                                     <option value="normal">일반입고</option>
+                                     <option value="return">반품입고</option>
+                                     <option value="defective">불량입고</option>
+                                     <option value="damaged">파손입고</option>
+                                </select>
+                                <label class="floating-label">입고유형</label>
+                            </div>
+                            <div class="relative floating-label-group filter-item">
+                                <select class="w-40 p-2 border border-slate-300 rounded-md text-sm h-full floating-select">
+                                     <option value="" selected></option>
+                                     <option value="all">전체</option>
+                                     <option value="completed">완료</option>
+                                     <option value="pending">진행중</option>
+                                </select>
+                                <label class="floating-label">결과 선택</label>
+                            </div>
+                           <div class="relative floating-label-group filter-item">
+                                <select class="w-40 p-2 border border-slate-300 rounded-md text-sm h-full floating-select">
+                                     <option value="" selected></option>
+                                     <option value="all">전체</option>
+                                     <option value="250616-0001">250616-0001</option>
+                                </select>
+                                <label class="floating-label">차수 선택</label>
+                            </div>
+                        </div>
+                        <!-- Filter Row 2 -->
+                        <div class="flex flex-wrap items-stretch gap-4">
+                             <div class="relative floating-label-group filter-item">
+                                <select class="w-48 p-2 border border-slate-300 rounded-md text-sm h-full floating-select">
+                                    <option value="" selected></option>
+                                    <option value="inboundDate">입고일</option>
+                                    <option value="scheduleDate">입고예정일</option>
+                                </select>
+                                <label class="floating-label">조회일자구분</label>
+                             </div>
+                             <div class="flex items-center filter-item">
+                                <div class="relative h-full">
+                                    <input type="date" value="2025-06-16" class="w-40 p-2 border border-slate-300 rounded-md text-sm h-full pr-9">
+                                    <span class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" style="background-image: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke-width=%271.5%27 stroke=%27%236b7280%27%3e%3cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 d=%27M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M-7.5 12h13.5%27/%3e%3c/svg%3e'); background-repeat: no-repeat; width: 1.25rem; height: 1.25rem;"></span>
+                                </div>
+                                <span class="mx-2">-</span>
+                                <div class="relative h-full">
+                                    <input type="date" value="2025-06-16" class="w-40 p-2 border border-slate-300 rounded-md text-sm h-full pr-9">
+                                     <span class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" style="background-image: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke-width=%271.5%27 stroke=%27%236b7280%27%3e%3cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 d=%27M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M-7.5 12h13.5%27/%3e%3c/svg%3e'); background-repeat: no-repeat; width: 1.25rem; height: 1.25rem;"></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-1 filter-item">
+                                <button class="text-sm border rounded-md px-3 h-full hover:bg-slate-100">1년</button>
+                                <button class="text-sm border rounded-md px-3 h-full hover:bg-slate-100">전월</button>
+                                <button class="text-sm border rounded-md px-3 h-full hover:bg-slate-100">당월</button>
+                                <button class="text-sm border rounded-md px-3 h-full bg-slate-800 text-white">오늘</button>
+                            </div>
+                            <div class="flex items-stretch border border-slate-300 rounded-md flex-grow max-w-lg filter-item">
+                                <div class="relative floating-label-group h-full flex-grow">
+                                     <select class="w-48 p-2 border-0 rounded-l-md text-sm h-full floating-select">
+                                         <option value="" selected></option>
+                                         <option value="all">전체</option><option value="sku">SKU</option><option value="productName">상품명</option>
+                                    </select>
+                                    <label class="floating-label left-3">검색조건</label>
+                                </div>
+                                <input type="text" placeholder="키워드를 입력하세요" class="w-full p-2 border-0 focus:ring-0 text-sm border-l">
+                            </div>
+                            <div class="flex items-stretch space-x-2 filter-item">
+                                <button class="bg-white text-slate-700 border border-slate-300 font-bold py-2 px-4 rounded-md hover:bg-slate-50 text-sm h-full">초기화</button>
+                                <button class="bg-sky-600 text-white font-bold py-2 px-4 rounded-md hover:bg-sky-700 text-sm h-full">조회</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-sm text-slate-700">
+                            [목록건수 : <span id="list-total-count">0</span>건]
+                        </div>
+                        <div class="relative">
+                            <button id="download-btn" class="text-sm bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700">다운로드</button>
+                            <div id="download-options" class="hidden absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 download-dropdown">
+                                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Excel</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">CSV</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">PDF</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="text-xs text-slate-700 uppercase table-header">
+                                <tr>
+                                    <th class="p-3 text-center">No</th>
+                                    <th class="p-3 text-left">입고유형</th>
+                                    <th class="p-3 text-left">상품구분</th>
+                                    <th class="p-3 text-left">결과</th>
+                                    <th class="p-3 text-left">차수</th>
+                                    <th class="p-3 text-left">셀러</th>
+                                    <th class="p-3 text-left">SKU</th>
+                                    <th class="p-3 text-left">옵션코드</th>
+                                    <th class="p-3 text-left">상품명</th>
+                                    <th class="p-3 text-left">옵션</th>
+                                    <th class="p-3 text-left">바코드</th>
+                                    <th class="p-3 text-center">입고예정일</th>
+                                    <th class="p-3 text-center">입고일</th>
+                                    <th class="p-3 text-center">유통기한</th>
+                                    <th class="p-3 text-left">LOT</th>
+                                    <th class="p-3 text-right">입고예정수량</th>
+                                    <th class="p-3 text-right">입고수량</th>
+                                    <th class="p-3 text-left">메모</th>
+                                    <th class="p-3 text-left">작업자(id)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-table-body" class="divide-y divide-slate-200 bg-white"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // --- Mock Data ---
+        const inboundListData = [
+            { no: 1, productType: '칸닷슈', inboundType: '일반입고', result: '완료', batch: '250616-0001', seller: '파파레서피_Cox10', sku: 'FREE_NAA1A0024', optionCode: 'FREE_NAA1A0024', productName: '블레미쉬 효소 파우더 클렌저', option: 'View_블레미쉬효소파우더클렌저', barcode: '8809738551499', scheduleDate: '2025-06-15', inboundDate: '2025-06-16 14:48:57', expDate: '2029-05-27', lot: 'LOT123457', scheduledQty: 7777, inboundQty: 7777, memo: '', worker: 'admin_jw' },
+            { no: 2, productType: '일반', inboundType: '일반입고', result: '완료', batch: '250616-0001', seller: '파파레서피_Cox10', sku: 'FREE_NAA1A018B', optionCode: 'FREE_NAA1A018B', productName: '진짜쑥 비누 100G (본품+증정)', option: '진짜쑥클렌징비누100G(본품+증정)', barcode: '8809738550516', scheduleDate: '2025-06-15', inboundDate: '2025-06-16 14:48:57', expDate: '2029-05-27', lot: 'LOT123458', scheduledQty: 7777, inboundQty: 7777, memo: '', worker: 'admin_jw' },
+            { no: 3, productType: '일반', inboundType: '일반입고', result: '완료', batch: '250616-0001', seller: '파파레서피_Cox10', sku: 'FREE_NAA1A021A', optionCode: 'FREE_NAA1A021A', productName: '파파레서피 효소 파우더 클렌저 200ml', option: '파파레서피효소파우더클렌저200ml', barcode: '8809738553017', scheduleDate: '2025-06-15', inboundDate: '2025-06-16 14:48:57', expDate: '2029-05-27', lot: 'LOT123459', scheduledQty: 7777, inboundQty: 7777, memo: '', worker: 'admin_jw' },
+            { no: 4, productType: '칸닷슈', inboundType: '일반입고', result: '완료', batch: '250616-0001', seller: '파파레서피_Cox10', sku: 'FREE_NAA1A0011A', optionCode: 'FREE_NAA1A0011A', productName: '파파레서피 효소 파우더 클렌저 PRO', option: 'View_파파레서피효소파우더클렌저PRO', barcode: '8809738554558', scheduleDate: '2025-06-15', inboundDate: '2025-06-16 14:48:57', expDate: '2029-05-27', lot: 'LOT123460', scheduledQty: 7777, inboundQty: 7777, memo: '', worker: 'admin_jw' },
+            { no: 5, productType: '일반', inboundType: '일반입고', result: '완료', batch: '250616-0001', seller: '파파레서피_Cox10', sku: 'FREE_NAA1A011B', optionCode: 'FREE_NAA1A011B', productName: '파파레서피효소파우더클렌저(리필)스탠딩파우치형', option: 'View_파파레서피효소파우더클렌저(리필)스탠딩파우치형', barcode: '8809738554564', scheduleDate: '2025-06-15', inboundDate: '2025-06-16 14:48:57', expDate: '2029-05-27', lot: 'LOT123461', scheduledQty: 7777, inboundQty: 7777, memo: '', worker: 'admin_jw' },
+        ];
+        
+        function renderListTable(data) {
+            const listTableBody = document.getElementById('list-table-body');
+            if (!listTableBody) return;
+
+            listTableBody.innerHTML = '';
+
+            data.forEach((item) => {
+                const row = document.createElement('tr');
+                row.dataset.no = item.no;
+
+                row.innerHTML = `
+                    <td class="p-3 text-center">${item.no}</td>
+                    <td class="p-3 text-left">${item.inboundType}</td>
+                    <td class="p-3 text-left">${item.productType}</td>
+                    <td class="p-3 text-left">${item.result}</td>
+                    <td class="p-3 text-left">${item.batch}</td>
+                    <td class="p-3 text-left">${item.seller}</td>
+                    <td class="p-3 text-left font-mono">${item.sku}</td>
+                    <td class="p-3 text-left font-mono">${item.optionCode}</td>
+                    <td class="p-3 text-left">${item.productName}</td>
+                    <td class="p-3 text-left">${item.option}</td>
+                    <td class="p-3 text-left font-mono">${item.barcode}</td>
+                    <td class="p-3 text-center">${item.scheduleDate}</td>
+                    <td class="p-3 text-center">${item.inboundDate}</td>
+                    <td class="p-3 text-center">${item.expDate}</td>
+                    <td class="p-3 text-left">${item.lot}</td>
+                    <td class="p-3 text-right">${item.scheduledQty.toLocaleString()}</td>
+                    <td class="p-3 text-right">${item.inboundQty.toLocaleString()}</td>
+                    <td class="p-3 text-left memo-cell">${item.memo}</td>
+                    <td class="p-3 text-left">${item.worker}</td>
+                `;
+                listTableBody.appendChild(row);
+            });
+            
+            document.getElementById('list-total-count').textContent = data.length.toLocaleString();
+        }
+        
+        function setupFloatingLabels() {
+            const selects = document.querySelectorAll('.floating-select');
+            selects.forEach(select => {
+                const checkValue = () => {
+                    if (select.value) {
+                        select.classList.add('has-value');
+                    } else {
+                        select.classList.remove('has-value');
+                    }
+                };
+                checkValue();
+                select.addEventListener('change', checkValue);
+            });
+        }
+
+        function setupMemoEditing() {
+            const listTableBody = document.getElementById('list-table-body');
+            if (!listTableBody) return;
+
+            listTableBody.addEventListener('dblclick', (e) => {
+                const cell = e.target.closest('.memo-cell');
+                if (!cell) return;
+
+                const existingInput = cell.querySelector('input');
+                if (existingInput) return;
+
+                const originalMemo = cell.textContent;
+                const row = cell.closest('tr');
+                const itemNo = parseInt(row.dataset.no);
+
+                cell.innerHTML = '';
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = originalMemo;
+                input.className = 'w-full p-1 border border-sky-500 rounded-md focus:ring-2 focus:ring-sky-300 outline-none bg-white';
+                cell.appendChild(input);
+                input.focus();
+                input.select();
+
+                const saveChanges = () => {
+                    const newMemo = input.value;
+                    cell.innerHTML = newMemo;
+
+                    const dataItem = inboundListData.find(item => item.no === itemNo);
+                    if (dataItem) {
+                        dataItem.memo = newMemo;
+                    }
+                };
+
+                input.addEventListener('blur', saveChanges);
+                input.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        input.blur();
+                    } else if (event.key === 'Escape') {
+                        cell.innerHTML = originalMemo;
+                    }
+                });
+            });
+        }
+        
+        function setupDownloadDropdown() {
+            const downloadBtn = document.getElementById('download-btn');
+            const downloadOptions = document.getElementById('download-options');
+            
+            if(!downloadBtn || !downloadOptions) return;
+
+            downloadBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                downloadOptions.classList.toggle('hidden');
+            });
+
+            window.addEventListener('click', (e) => {
+                if (!downloadBtn.contains(e.target)) {
+                    downloadOptions.classList.add('hidden');
+                }
+            });
+            
+            downloadOptions.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert(`${link.textContent} 형식으로 다운로드를 시작합니다. (시뮬레이션)`);
+                    downloadOptions.classList.add('hidden');
+                })
+            });
+        }
+
+        // --- Document Ready ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderListTable(inboundListData);
+            setupFloatingLabels();
+            setupMemoEditing();
+            setupDownloadDropdown();
+        });
+    </script>
+</body>
+</html>

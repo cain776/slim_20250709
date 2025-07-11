@@ -97,8 +97,9 @@ const MENU_CONFIG = {
       hasSubmenu: true,
       order: 4,
       submenu: [
-        { id: 'inbound-history', name: '입고 내역', url: '#', order: 1 },
-        { id: 'inbound-register', name: '입고 등록', url: '#', order: 2 }
+        { id: 'inbound-list', name: '입고목록', url: '#', order: 1 },
+        { id: 'inbound-history', name: '입고 내역', url: '#', order: 2 },
+        { id: 'inbound-register', name: '입고 등록', url: '#', order: 3 }
       ]
     },
     {
@@ -112,12 +113,17 @@ const MENU_CONFIG = {
         { id: 'outbound-register', name: '출고 등록', url: '#', order: 2 }
       ]
     },
-    { 
-      id: 'inventory', 
-      name: '재고', 
+    {
+      id: 'inventory',
+      name: '재고',
       icon: 'fas fa-warehouse',
-      url: '#',
-      order: 6
+      hasSubmenu: true,
+      order: 6,
+      submenu: [
+        { id: 'inventory-adjustment', name: '재고조정', url: '#', order: 1 },
+        { id: 'inventory-history', name: '재고 내역', url: '#', order: 2 },
+        { id: 'inventory-status', name: '재고 현황', url: '#', order: 3 }
+      ]
     },
     { 
       id: 'products', 

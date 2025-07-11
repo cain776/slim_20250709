@@ -17,10 +17,11 @@ body {
  * =========================================== */
 
 /* LNB 기본 스타일 - 폭 80% 조정 */
-.main-sidebar {
+.main-sidebar,
+.main-sidebar.sidebar-dark-purple {
   width: 80% !important;
   max-width: 250px !important;
-  background-color: #1a237e !important; /* 진한 남색 */
+  background: linear-gradient(135deg, #402E49 0%, #524759 100%) !important; /* 차분한 보라색 그라데이션 */
   color: #ffffff !important; /* 화이트 폰트 */
 }
 
@@ -31,13 +32,13 @@ body {
 
 /* 브랜드 영역 스타일 */
 .brand-link {
-  background-color: #1a237e !important;
+  background-color: #402E49 !important;
   color: #ffffff !important;
-  border-bottom: 1px solid #3949ab !important;
+  border-bottom: 1px solid #524759 !important;
 }
 
 .brand-link:hover {
-  background-color: #303f9f !important;
+  background-color: #524759 !important;
   color: #ffffff !important;
   text-decoration: none !important;
 }
@@ -55,13 +56,13 @@ body {
 }
 
 .nav-sidebar .nav-item .nav-link:hover {
-  background-color: #3949ab !important;
+  background-color: #524759 !important;
   color: #ffffff !important;
 }
 
 /* 활성 메뉴 (홈, 공지사항 등 대메뉴) 스타일 */
 .nav-sidebar .nav-item .nav-link.active {
-  background-color: #3949ab !important;
+  background-color: #524759 !important;
   color: #ffffff !important;
   font-weight: 600 !important;
 }
@@ -74,16 +75,16 @@ body {
 }
 
 .nav-sidebar .nav-treeview .nav-item .nav-link:hover {
-  background-color: rgba(57, 73, 171, 0.5) !important;
+  background-color: rgba(82, 71, 89, 0.5) !important;
   color: #ffffff !important;
 }
 
-/* 서브메뉴 활성화 시 파란색 처리 */
+/* 서브메뉴 활성화 시 보라색 처리 */
 .nav-sidebar .nav-treeview .nav-item .nav-link.active {
-  background-color: #2196f3 !important; /* 파란색 */
+  background-color: #5A4E67 !important; /* 중간 보라색 */
   color: #ffffff !important;
   font-weight: 600 !important;
-  border-left: 4px solid #64b5f6 !important;
+  border-left: 4px solid #675B78 !important;
 }
 
 /* 메뉴 아이콘 스타일 */
@@ -106,7 +107,7 @@ body {
 /* 서브메뉴 컨테이너 스타일 */
 .nav-sidebar .nav-treeview {
   background-color: rgba(0, 0, 0, 0.1) !important;
-  border-left: 3px solid #3949ab !important;
+  border-left: 3px solid #524759 !important;
 }
 
 /* 메뉴 뱃지 스타일 */

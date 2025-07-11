@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>재고조정 및 상세 정보</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        body { font-family: 'Pretendard', 'Inter', sans-serif; background-color: #f8fafc; }
+        .page { display: block; }
+        .page.hidden { display: none; }
+        
+        /* --- 공통 스타일 --- */
+        .option-link {
+            cursor: pointer;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+        .option-link:hover {
+            text-decoration: underline;
+        }
+
+        /* --- 재고 조정 테이블 스타일 --- */
+        .editable-input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background-color: #f8fafc;
+            transition: all 0.2s ease-in-out;
+        }
+        .editable-input:hover {
+            border-color: #cbd5e1;
+            background-color: #f1f5f9;
+        }
+        .editable-input:focus {
+            outline: 2px solid #818cf8;
+            outline-offset: 0px;
+            border-color: #6366f1;
+            background-color: white;
+        }
+        .location-button {
+            width: 100%;
+            text-align: left;
+            padding: 6px 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+        .location-button:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+        
+        /* --- 상세 페이지 스타일 --- */
+        #locationDetailTable .location-row.selected {
+            background-color: #eef2ff;
+        }
+        #locationDetailTable .location-row { cursor: pointer; transition: background-color 0.2s; }
+
+        .related-product-card { cursor: pointer; transition: all 0.2s ease; }
+        .related-product-card.active-selection {
+            border-color: #4338ca;
+            background-color: #eef2ff;
+            --tw-ring-color: #6366f1;
+            --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+            --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+            box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+        }
+
+        .adjustment-form-section { display: none; }
+        .adjustment-form-section.active { display: block; }
+
+        /* --- 모달 스타일 --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(15, 23, 42, 0.6);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-container {
+            background-color: white;
+            padding: 1.5rem 2rem 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            transform: scale(0.95);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal-container { transform: scale(1); }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 1rem; border-bottom: 1px solid #e2e8f0; margin-bottom: 1.5rem;
+        }
+        .modal-close-btn { color: #64748b; cursor: pointer; }
+        .modal-close-btn:hover { color: #1e293b; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- 1. 재고 조정 목록 페이지 -->
+    <div id="adjustmentListPage" class="page bg-white p-6 rounded-2xl shadow-lg shadow-slate-200/50">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-extrabold text-slate-800">재고조정</h1>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">No</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">셀러</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">SKU</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">상품명</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">옵션코드</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">옵션</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">옵션그룹</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">상품구분</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">옵션바코드</th>
+                        <th class="px-3 py-3 text-right font-medium text-slate-500 uppercase tracking-wider">총 재고</th>
+                        <th class="px-3 py-3 text-right font-medium text-slate-500 uppercase tracking-wider">총 출고예정</th>
+                        <th class="px-3 py-3 text-right font-medium text-slate-500 uppercase tracking-wider">총 가용재고</th>
+                        <th class="px-3 py-3 text-right font-medium text-slate-500 uppercase tracking-wider">안전재고</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">센터</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">존</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">로케이션</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">LOT</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">유통기한</th>
+                        <th class="px-3 py-3 text-right font-medium text-slate-500 uppercase tracking-wider">현재재고</th>
+                        <th class="px-3 py-3 text-center font-medium text-slate-500 uppercase tracking-wider">상태</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">최종 조정일시</th>
+                        <th class="px-3 py-3 text-left font-medium text-slate-500 uppercase tracking-wider">최종 작업자(ID)</th>
+                    </tr>
+                </thead>
+                <tbody id="adjustmentTable" class="bg-white"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. 상품 상세 정보 페이지 -->
+    <div id="detailPage" class="page hidden">
+        <header class="mb-8 flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold text-slate-800">상품 재고 상세 정보</h1>
+            <button id="backToListBtn" class="px-5 py-2 text-sm font-semibold text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200">목록으로 돌아가기</button>
+        </header>
+        <main id="detailContent" class="grid grid-cols-1 lg:grid-cols-3 gap-6"></main>
+        <div class="mt-8 flex justify-end">
+            <button id="detailSaveBtn" class="px-8 py-3 font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 shadow-lg hover:shadow-indigo-500/50 transition-all disabled:bg-slate-400 disabled:shadow-none disabled:cursor-not-allowed" disabled>저장하기</button>
+        </div>
+    </div>
+
+    <!-- 로케이션 검색 모달 (공용) -->
+    <div id="locationSearchModal" class="modal-overlay">
+        <div class="modal-container" style="max-width: 720px;">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-slate-800">로케이션 검색</h2>
+                <button class="modal-close-btn" data-modal-id="locationSearchModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="flex space-x-2 mb-4">
+                <select id="locationSearchCenter" class="py-1.5 px-3 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-1/3 text-sm"></select>
+                <select id="locationSearchZone" class="py-1.5 px-3 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-1/3 text-sm"></select>
+                <input type="text" id="locationSearchInput" placeholder="로케이션 검색" class="py-1.5 px-3 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-1/3 text-sm">
+                <button id="locationSearchBtn" class="flex items-center justify-center gap-x-1.5 px-4 py-1.5 text-sm font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                    <span>검색</span>
+                </button>
+            </div>
+            <div class="h-80 overflow-y-auto border rounded-md">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-slate-100 sticky top-0">
+                        <tr>
+                            <th class="px-4 py-2 text-left font-semibold">No</th>
+                            <th class="px-4 py-2 text-left font-semibold">센터</th>
+                            <th class="px-4 py-2 text-left font-semibold">존</th>
+                            <th class="px-4 py-2 text-left font-semibold">로케이션</th>
+                        </tr>
+                    </thead>
+                    <tbody id="locationSearchResults"></tbody>
+                </table>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button class="px-6 py-2 text-sm font-semibold text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 modal-close-btn" data-modal-id="locationSearchModal">취소</button>
+                <button id="selectLocationBtn" class="px-6 py-2 text-sm font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700" disabled>선택</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 재고 수정 사유 입력 모달 (목록 페이지용) -->
+    <div id="reasonModal" class="modal-overlay">
+        <div class="modal-container" style="max-width: 520px;">
+             <div class="modal-header">
+                <h2 class="text-xl font-bold text-slate-800">재고 수정 사유 입력</h2>
+                <button class="modal-close-btn" data-modal-id="reasonModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div id="adjustmentInfo" class="grid grid-cols-4 gap-x-4 gap-y-2 text-sm p-4 bg-slate-50 rounded-lg"></div>
+                <div>
+                    <label for="reasonSelect" class="block text-sm font-medium text-slate-700 mb-1">사유 선택 <span class="text-red-500">*</span></label>
+                    <select id="reasonSelect" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </select>
+                </div>
+                <div id="otherReasonContainer" class="hidden">
+                    <label for="otherReasonInput" class="block text-sm font-medium text-slate-700 mb-1">사유 직접 입력</label>
+                    <textarea id="otherReasonInput" rows="3" class="w-full p-2 border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="구체적인 조정 사유를 입력하세요."></textarea>
+                </div>
+            </div>
+            <div class="mt-8 flex justify-end space-x-3">
+                <button id="cancelReasonBtn" class="px-6 py-2 text-sm font-semibold text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200">취소</button>
+                <button id="saveReasonBtn" class="px-6 py-2 text-sm font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">저장</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+// --- 샘플 데이터 ---
+const database = {
+    'AMP-30ML': { id: 1, seller: 'UIQ', sku: 'UIQ-AMP-001', name: '바이옴 베리어 에센스 앰플', optionGroup: '30ml 옵션', optionCode: 'AMP-30ML', option: '30ml', productClassification: '일반상품', barcode: '8801234567890', scheduledRelease: 50, holdStock: 20, safetyStock: 20, locations: [ { id: 1, center: '인천1센터(청라)', zone: 'A-Zone', loc: 'RA-01-01-A', lot: 'L2405A01', expiry: '2026-05-31', mfgDate: '2024-06-01', current: 200, status: '정상', lastAdjustedAt: '2025-07-07 09:30:15', lastWorker: 'admin' }, { id: 2, center: '인천1센터(청라)', zone: 'B-Zone', loc: 'RB-02-03-D', lot: 'L2405A02', expiry: '2026-05-31', mfgDate: '2024-06-01', current: 150, status: '정상', lastAdjustedAt: '2025-07-06 18:05:41', lastWorker: 'user01' }, { id: 8, center: '인천1센터(청라)', zone: 'A-Zone', loc: 'RA-01-01-C', lot: 'L2404A03', expiry: '2026-04-30', mfgDate: '2024-05-01', current: 80, status: '정상', lastAdjustedAt: '2025-07-07 11:20:00', lastWorker: 'admin' } ] },
+    'AMP-30ML-G': { id: 2, seller: 'UIQ', sku: 'UIQ-AMP-001', name: '바이옴 베리어 에센스 앰플', optionGroup: '30ml 옵션', optionCode: 'AMP-30ML-G', option: '30ml', productClassification: '칸닷슈 상품', barcode: '8801234567891', scheduledRelease: 20, holdStock: 0, safetyStock: 10, locations: [ { id: 7, center: '인천1센터(청라)', zone: 'A-Zone', loc: 'RA-01-02-B', lot: 'L2408A01', expiry: '2026-08-31', mfgDate: '2024-09-01', current: 150, status: '유통기한임박', lastAdjustedAt: '2025-06-30 15:00:12', lastWorker: 'admin' } ] },
+    'AMP-50ML': { id: 6, seller: 'UIQ', sku: 'UIQ-AMP-001', name: '바이옴 베리어 에센스 앰플', optionGroup: '50ml 옵션', optionCode: 'AMP-50ML', option: '50ml', productClassification: '일반상품', barcode: '8801234567892', scheduledRelease: 15, holdStock: 5, safetyStock: 15, locations: [ { id: 9, center: '인천1센터(청라)', zone: 'A-Zone', loc: 'RA-01-01-D', lot: 'L2407A01', expiry: '2026-07-20', mfgDate: '2024-07-21', current: 200, status: '정상', lastAdjustedAt: '2025-07-01 10:10:10', lastWorker: 'admin' } ] },
+    'CLW-200ML': { id: 3, seller: 'UIQ', sku: 'UIQ-CRM-001', name: '미셀라 클렌징 워터', optionGroup: '200ml 옵션', optionCode: 'CLW-200ML', option: '200ml', productClassification: '일반상품', barcode: '8801234567893', scheduledRelease: 20, holdStock: 0, safetyStock: 50, locations: [ { id: 3, center: '인천2센터(원창)', zone: 'C-Zone', loc: 'RC-05-01-F', lot: 'L2406C01', expiry: '2026-06-15', mfgDate: '2024-06-16', current: 300, status: '정상', lastAdjustedAt: '2025-07-05 14:45:00', lastWorker: 'user02' } ] },
+    'CLW-200ML-G': { id: 4, seller: 'UIQ', sku: 'UIQ-CRM-001', name: '미셀라 클렌징 워터', optionGroup: '200ml 옵션', optionCode: 'CLW-200ML-G', option: '200ml', productClassification: '칸닷슈 상품', barcode: '8801234567894', scheduledRelease: 0, holdStock: 0, safetyStock: 20, locations: [ { id: 4, center: '인천2센터(원창)', zone: 'C-Zone', loc: 'RC-05-02-B', lot: 'L2406C02', expiry: '2026-06-15', mfgDate: '2024-06-16', current: 180, status: '정상', lastAdjustedAt: '2025-07-05 14:45:00', lastWorker: 'user02' }, { id: 5, center: '인천2센터(원창)', zone: 'D-Zone', loc: 'RD-01-01-A', lot: 'L2312D01', expiry: '2025-12-20', mfgDate: '2023-12-21', current: 40, status: '유통기한임박', lastAdjustedAt: '2025-07-02 09:00:00', lastWorker: 'admin' } ] },
+    'SUN-50ML': { id: 5, seller: 'UIQ', sku: 'UIQ-SUN-001', name: '바이옴 베리어 선스크린', optionGroup: '', optionCode: 'SUN-50ML', option: '50ml', productClassification: '일반상품', barcode: '8801234567895', scheduledRelease: 10, holdStock: 0, safetyStock: 30, locations: [ { id: 6, center: '인천1센터(청라)', zone: 'C-Zone', loc: 'RC-01-01-A', lot: 'L2407C01', expiry: '2026-07-20', mfgDate: '2024-07-21', current: 120, status: '정상', lastAdjustedAt: '2025-07-03 17:30:25', lastWorker: 'admin' }, { id: 11, center: '인천1센터(청라)', zone: 'C-Zone', loc: 'RC-01-01-B', lot: 'L2407C01', expiry: '2026-07-20', mfgDate: '2024-07-21', current: 15, status: '파손', lastAdjustedAt: '2025-07-08 11:00:00', lastWorker: 'admin' } ] },
+};
+const allLocations = [
+    { center: '인천1센터(청라)', zone: 'A-Zone', loc: 'RA-01-01-A' }, { center: '인천1센터(청라)', zone: 'A-Zone', loc: 'RA-01-01-B' }, { center: '인천1센터(청라)', zone: 'A-Zone', loc: 'RA-01-01-C' }, { center: '인천1센터(청라)', zone: 'A-Zone', loc: 'RA-01-01-D' },
+    { center: '인천1센터(청라)', zone: 'B-Zone', loc: 'RB-02-03-D' }, { center: '인천1센터(청라)', zone: 'C-Zone', loc: 'RC-01-01-A' }, { center: '인천1센터(청라)', zone: 'C-Zone', loc: 'RC-01-01-B' },
+    { center: '인천2센터(원창)', zone: 'C-Zone', loc: 'RC-05-01-F' }, { center: '인천2센터(원창)', zone: 'C-Zone', loc: 'RC-05-02-B' }, { center: '인천2센터(원창)', zone: 'D-Zone', loc: 'RD-01-01-A' },
+];
+const statusOptions = ['정상', '유통기한임박', '파손', '불량'];
+const reasonOptions = ["데이터 수정", "전산오류", "유통기한 경과", "실사재고", "임가공", "손실/파손", "불량/폐기", "기타"];
+
+// --- DOM Elements ---
+const adjustmentListPage = document.getElementById('adjustmentListPage');
+const detailPage = document.getElementById('detailPage');
+const adjustmentTable = document.getElementById('adjustmentTable');
+const detailContent = document.getElementById('detailContent');
+const locationSearchModal = document.getElementById('locationSearchModal');
+const reasonModal = document.getElementById('reasonModal');
+const locationSearchResults = document.getElementById('locationSearchResults');
+const selectLocationBtn = document.getElementById('selectLocationBtn');
+
+// --- State ---
+let activeEditingContext = null;
+let selectedLocationRow = null;
+let currentOptionCodeForDetail = null;
+let selectedLocationIdForDetail = null;
+let selectedTargetForTypeChange = null;
+let activeRelatedProductCode = null;
+
+
+// --- Helper Functions ---
+function formatProductClassification(classification) {
+    const colorClass = classification === '칸닷슈 상품' ? 'text-blue-600 font-bold' : 'text-slate-700 font-semibold';
+    return `<span class="${colorClass}">${classification}</span>`;
+}
+function openModal(modalId) { document.getElementById(modalId).classList.add('active'); }
+function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
+    document.getElementById(pageId).classList.remove('hidden');
+    window.scrollTo(0, 0);
+}
+function generateUniqueId() { return Date.now() + Math.random(); }
+function getCurrentTimestamp() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+}
+const calculateStock = (products) => {
+    let total = 0, normal = 0, scheduled = 0, hold = 0, nearingExpiry = 0;
+    products.forEach(p => {
+        scheduled += (p.scheduledRelease || 0);
+        hold += (p.holdStock || 0);
+        p.locations.forEach(l => {
+            total += l.current;
+            if (l.status === '정상' || l.status === '유통기한임박') {
+                normal += l.current;
+            }
+            if (l.status === '유통기한임박') {
+                nearingExpiry += l.current;
+            }
+        });
+    });
+    const available = normal - scheduled - hold;
+    return { total, available, scheduled, hold, nearingExpiry };
+};
+
+// --- Rendering: Main Adjustment List ---
+function renderAdjustmentListPage() {
+    adjustmentTable.innerHTML = '';
+    const flatData = [];
+    Object.values(database).forEach(product => {
+        const { total, available } = calculateStock([product]);
+        if (product.locations && product.locations.length > 0) {
+            product.locations.forEach(loc => {
+                flatData.push({ ...product, locationInfo: loc, totalStockForOption: total, totalAvailableForOption: available });
+            });
+        }
+    });
+
+    flatData.sort((a, b) => a.sku.localeCompare(b.sku) || a.optionCode.localeCompare(b.optionCode) || a.locationInfo.loc.localeCompare(b.locationInfo.loc));
+
+    const renderedOptionCodes = new Set();
+    flatData.forEach((item, index) => {
+        const row = document.createElement('tr');
+        const loc = item.locationInfo;
+        const optionCode = item.optionCode;
+        const borderClass = 'border-b border-slate-100';
+        const optionRowspan = flatData.filter(d => d.optionCode === optionCode).length;
+
+        let rowHtml = `<td class="px-3 py-2 align-middle text-center ${borderClass}">${index + 1}</td>`;
+
+        if (!renderedOptionCodes.has(optionCode)) {
+            renderedOptionCodes.add(optionCode);
+            rowHtml += `
+                <td class="px-3 py-2 align-top ${borderClass}" rowspan="${optionRowspan}">${item.seller}</td>
+                <td class="px-3 py-2 align-top ${borderClass}" rowspan="${optionRowspan}">${item.sku}</td>
+                <td class="px-3 py-2 align-top font-semibold ${borderClass}" rowspan="${optionRowspan}">${item.name}</td>
+                <td class="px-3 py-2 align-top option-link ${borderClass}" rowspan="${optionRowspan}" data-option-code="${optionCode}">${item.optionCode}</td>
+                <td class="px-3 py-2 align-top ${borderClass}" rowspan="${optionRowspan}">${item.option}</td>
+                <td class="px-3 py-2 align-top ${borderClass}" rowspan="${optionRowspan}">${item.optionGroup || '-'}</td>
+                <td class="px-3 py-2 align-top ${borderClass}" rowspan="${optionRowspan}">${formatProductClassification(item.productClassification)}</td>
+                <td class="px-3 py-2 align-top ${borderClass}" rowspan="${optionRowspan}">${item.barcode || '-'}</td>
+                <td class="px-3 py-2 align-top text-right font-semibold ${borderClass}" rowspan="${optionRowspan}">${item.totalStockForOption.toLocaleString()}</td>
+                <td class="px-3 py-2 align-top text-right ${borderClass}" rowspan="${optionRowspan}">${(item.scheduledRelease || 0).toLocaleString()}</td>
+                <td class="px-3 py-2 align-top text-right font-bold text-blue-600 ${borderClass}" rowspan="${optionRowspan}">${item.totalAvailableForOption.toLocaleString()}</td>
+                <td class="px-3 py-2 align-top text-right text-orange-600 ${borderClass}" rowspan="${optionRowspan}">${(item.safetyStock || 0).toLocaleString()}</td>
+            `;
+        }
+        
+        const statusSelectHtml = statusOptions.map(opt => `<option value="${opt}" ${loc.status === opt ? 'selected' : ''}>${opt}</option>`).join('');
+
+        rowHtml += `
+            <td class="px-3 py-2 align-middle ${borderClass}">${loc.center || '-'}</td>
+            <td class="px-3 py-2 align-middle ${borderClass}">${loc.zone || ''}</td>
+            <td class="px-2 py-2 align-middle ${borderClass}" style="min-width: 120px;"><button class="location-button" data-action="edit-location" data-option-code="${optionCode}" data-location-id="${loc.id}">${loc.loc || '-'}</button></td>
+            <td class="px-2 py-2 align-middle ${borderClass}" style="min-width: 120px;"><input type="text" class="editable-input" value="${loc.lot || ''}" data-field="lot" data-original-value="${loc.lot || ''}" data-option-code="${optionCode}" data-location-id="${loc.id}" /></td>
+            <td class="px-2 py-2 align-middle ${borderClass}" style="min-width: 150px;"><input type="date" class="editable-input" value="${loc.expiry || ''}" data-field="expiry" data-original-value="${loc.expiry || ''}" data-option-code="${optionCode}" data-location-id="${loc.id}" /></td>
+                <td class="px-2 py-2 align-middle ${borderClass}" style="min-width: 100px;"><input type="number" class="editable-input text-right" value="${loc.current}" data-field="current" data-original-value="${loc.current}" data-option-code="${optionCode}" data-location-id="${loc.id}" /></td>
+            <td class="px-2 py-2 align-middle text-center ${borderClass}" style="min-width: 120px;"><select class="editable-input" data-field="status" data-original-value="${loc.status || ''}" data-option-code="${optionCode}" data-location-id="${loc.id}">${statusSelectHtml}</select></td>
+            <td class="px-3 py-2 align-middle text-slate-600 ${borderClass}" style="min-width: 150px;">${loc.lastAdjustedAt || '-'}</td>
+            <td class="px-3 py-2 align-middle text-slate-600 ${borderClass}">${loc.lastWorker || '-'}</td>
+        `;
+        row.innerHTML = rowHtml;
+        adjustmentTable.appendChild(row);
+    });
+}
+
+// --- Rendering: Detail Page Sub-Components ---
+function renderSelectedStockStatus(optionCode) {
+    const product = database[optionCode];
+    if (!product) return '';
+    
+    const productStock = calculateStock([product]);
+    const createStockRow = (label, value, colorClass = 'text-slate-800') => `<div><p class="font-medium text-slate-500">${label}</p><p class="${colorClass} font-extrabold text-2xl mt-1">${(value || 0).toLocaleString()}</p></div>`;
+
+    return `
+        <section class="bg-white p-6 rounded-2xl shadow-lg shadow-slate-200/50">
+            <h2 class="text-xl font-bold text-slate-700 mb-5 border-b border-slate-200 pb-4">선택된 재고 현황 (${product.optionCode})</h2>
+            <div class="grid grid-cols-3 gap-x-4 gap-y-5 text-sm">
+                ${createStockRow('현재재고', productStock.total)}
+                ${createStockRow('가용재고', productStock.available, 'text-indigo-600')}
+                ${createStockRow('출고예정', productStock.scheduled, 'text-amber-600')}
+                ${createStockRow('보류', productStock.hold, 'text-rose-600')}
+                ${createStockRow('유통기한임박', productStock.nearingExpiry, 'text-orange-500')}
+            </div>
+        </section>
+    `;
+}
+
+// --- Rendering: Main Detail Page ---
+function renderDetailPage(optionCode) {
+    currentOptionCodeForDetail = optionCode;
+    activeRelatedProductCode = optionCode; // Initialize active selection
+    selectedLocationIdForDetail = null;
+    selectedTargetForTypeChange = null;
+    const product = database[optionCode];
+    if (!product) return;
+
+    const skuProducts = Object.values(database).filter(p => p.sku === product.sku);
+    const groupProducts = product.optionGroup ? Object.values(database).filter(p => p.optionGroup === product.optionGroup) : [];
+    
+    const skuStock = calculateStock(skuProducts);
+    const createStockRow = (label, value, colorClass = 'text-slate-800') => `<div><p class="font-medium text-slate-500">${label}</p><p class="${colorClass} font-extrabold text-2xl mt-1">${(value || 0).toLocaleString()}</p></div>`;
+    const createInfoRow = (label, value) => `<div class="text-sm"><p class="text-slate-500 mb-1">${label}</p><p class="font-semibold text-slate-800">${value || '-'}</p></div>`;
+
+    const productInfoHtml = `
+        <section class="bg-white p-6 rounded-2xl shadow-lg shadow-slate-200/50">
+            <h2 class="text-xl font-bold text-slate-700 mb-5 border-b border-slate-200 pb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                상품 기본 정보
+            </h2>
+            <div class="space-y-4">
+                ${createInfoRow('상품명', product.name)}
+                ${createInfoRow('옵션', product.option)}
+                <div class="grid grid-cols-2 gap-4 pt-2">
+                    ${createInfoRow('셀러', product.seller)}
+                    ${createInfoRow('바코드', product.barcode)}
+                    ${createInfoRow('옵션그룹', product.optionGroup)}
+                    ${createInfoRow('상품구분', formatProductClassification(product.productClassification))}
+                    ${createInfoRow('상품코드(SKU)', product.sku)}
+                    ${createInfoRow('옵션코드', product.optionCode)}
+                </div>
+            </div>
+        </section>
+    `;
+
+    const productInfoAndStockHtml = `
+        <div class="space-y-6">
+            ${productInfoHtml}
+            <section class="bg-white p-6 rounded-2xl shadow-lg shadow-slate-200/50">
+                <h2 class="text-xl font-bold text-slate-700 mb-5 border-b border-slate-200 pb-4">상품 전체 재고 (SKU 기준)</h2>
+                <div class="grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                    ${createStockRow('총 재고', skuStock.total)}
+                    ${createStockRow('총 가용재고', skuStock.available, 'text-indigo-600')}
+                    ${createStockRow('총 출고예정', skuStock.scheduled, 'text-amber-600')}
+                    ${createStockRow('총 보류', skuStock.hold, 'text-rose-600')}
+                </div>
+            </section>
+            ${product.optionGroup ? `
+            <section class="bg-white p-6 rounded-2xl shadow-lg shadow-slate-200/50">
+                <h2 class="text-xl font-bold text-slate-700 mb-5 border-b border-slate-200 pb-4">옵션 그룹 및 연관 재고</h2>
+                <div id="relatedProductsContainer" class="space-y-3 text-sm">
+                    ${groupProducts.map(rp => {
+                        const isSelected = rp.optionCode === activeRelatedProductCode;
+                        const containerClasses = `block p-4 rounded-lg border-2 related-product-card ${isSelected ? 'active-selection' : 'border-slate-200 bg-slate-50 hover:border-slate-300'}`;
+                        
+                        return `
+                        <div class="${containerClasses}" data-option-code="${rp.optionCode}">
+                            <div class="flex items-center pointer-events-none">
+                                <div class="flex-1 min-w-0">
+                                    <div class="mb-1.5">${formatProductClassification(rp.productClassification)}</div>
+                                    <p class="text-sm font-semibold text-slate-800 truncate" title="${rp.optionCode}">${rp.optionCode}</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">${rp.option}</p>
+                                </div>
+                                <div class="flex items-center flex-shrink-0 ml-4">
+                                    <div class="text-right">
+                                        <p class="text-xs text-slate-500">가용</p>
+                                        <p class="font-bold text-blue-600 text-base mt-0.5">${calculateStock([rp]).available.toLocaleString()}</p>
+                                    </div>
+                                    <div class="text-right ml-4">
+                                        <p class="text-xs text-slate-500">총 재고</p>
+                                        <p class="font-semibold text-slate-600 text-base mt-0.5">${calculateStock([rp]).total.toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </section>
+            ` : ''}
+            <div id="selectedStockStatusContainer">
+                ${renderSelectedStockStatus(activeRelatedProductCode)}
+            </div>
+        </div>
+    `;
+
+    const locationTableHtml = `
+        <section class="bg-white p-6 rounded-2xl shadow-lg shadow-slate-200/50 h-full">
+            <h2 class="text-xl font-bold text-slate-700 mb-5 border-b pb-4">로케이션별 재고 현황</h2>
+            <div class="overflow-y-auto" style="max-height: 850px;">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-slate-50 sticky top-0">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-600">센터/존</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-600">로케이션</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-600">LOT</th>
+                            <th class="px-4 py-3 text-left font-semibold text-slate-600">유통기한</th>
+                            <th class="px-3 py-3 text-center font-semibold text-slate-600">현재고</th>
+                            <th class="px-3 py-3 text-center font-semibold text-slate-600">가용재고</th>
+                        </tr>
+                    </thead>
+                    <tbody id="locationDetailTable" class="divide-y divide-slate-200">
+                        ${product.locations.map(loc => {
+                            const available = (loc.status === '정상' || loc.status === '유통기한임박') ? loc.current : 0;
+                            return `
+                                <tr class="location-row" data-location-id="${loc.id}">
+                                    <td class="px-4 py-4"><div class="font-bold">${loc.center}</div><div class="text-xs text-slate-500">${loc.zone}</div></td>
+                                    <td class="px-4 py-4 font-mono font-semibold">${loc.loc}</td>
+                                    <td class="px-4 py-4 font-mono">${loc.lot || '-'}</td>
+                                    <td class="px-4 py-4 font-mono">${loc.expiry || '-'}</td>
+                                    <td class="px-3 py-4 text-center font-mono font-bold">${loc.current.toLocaleString()}</td>
+                                    <td class="px-3 py-4 text-center font-mono font-bold text-blue-600">${available.toLocaleString()}</td>
+                                </tr>`
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </section>`;
+
+    const adjustmentFormHtml = `
+        <section class="bg-white p-6 rounded-2xl shadow-lg shadow-slate-200/50 h-full flex flex-col">
+            <div class="flex-grow">
+                <h2 class="text-xl font-bold text-slate-700 mb-5 border-b pb-4">조정 내용 입력</h2>
+                <div id="selectedLocationInfo" class="p-4 mb-4 bg-indigo-50 rounded-lg text-sm text-indigo-800"><p class="font-semibold">중앙 테이블에서 로케이션을 선택하세요.</p></div>
+                <div id="adjustmentFields" class="space-y-4 text-sm">
+                    <div><label class="font-medium text-slate-700">조정 유형</label><select id="adjustmentType" class="w-full mt-1 p-2 border rounded-md bg-white" disabled><option value="adjust">재고 조정(수량/상태 변경)</option><option value="move">재고 이동</option><option value="split">재고 분할</option><option value="type_change">상품구분 전환</option></select></div>
+                    
+                    <div id="adjust-form" class="adjustment-form-section space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="font-medium text-slate-700">변경 후 수량</label><input type="number" id="adj_newQuantity" class="w-full mt-1 p-2 border rounded-md"></div>
+                            <div><label class="font-medium text-slate-700">조정 수량</label><input type="text" id="adj_adjustedQuantity" class="w-full mt-1 p-2 border rounded-md bg-slate-100" readonly></div>
+                        </div>
+                        <div><label class="font-medium text-slate-700">재고 상태</label><select id="adj_newStatus" class="w-full mt-1 p-2 border rounded-md">${statusOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('')}</select></div>
+                        <div><label class="font-medium text-slate-700">LOT</label><input type="text" id="adj_lot" class="w-full mt-1 p-2 border rounded-md"></div>
+                        <div><label class="font-medium text-slate-700">유통기한</label><input type="date" id="adj_expiry" class="w-full mt-1 p-2 border rounded-md"></div>
+                        <div><label class="font-medium text-slate-700">조정 사유 <span class="text-red-500">*</span></label><textarea id="adjust_reason" rows="3" class="w-full mt-1 p-2 border rounded-md" placeholder="조정 사유를 입력하세요."></textarea></div>
+                    </div>
+
+                    <div id="move-form" class="adjustment-form-section space-y-4">
+                        <div><label class="font-medium text-slate-700">이동 수량 <span class="text-red-500">*</span></label><input type="number" id="move_quantity" placeholder="이동할 수량" class="w-full mt-1 p-2 border rounded-md"></div>
+                        <div><label class="font-medium text-slate-700">목적지 로케이션 <span class="text-red-500">*</span></label><div class="flex items-center mt-1"><input type="text" id="move_targetLocation" placeholder="로케이션 코드" class="w-full p-2 border rounded-l-md bg-slate-100" readonly><button class="p-2 border-t border-b border-r rounded-r-md bg-slate-200 hover:bg-slate-300 location-picker-btn" data-target-input="move_targetLocation"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-600 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></button></div></div>
+                        <div><label class="font-medium text-slate-700">이동 사유 <span class="text-red-500">*</span></label><textarea id="move_reason" rows="4" class="w-full mt-1 p-2 border rounded-md" placeholder="재고 이동 사유를 입력하세요."></textarea></div>
+                    </div>
+
+                    <div id="split-form" class="adjustment-form-section space-y-6">
+                        <div class="border-b pb-4">
+                            <h3 class="font-semibold text-md text-slate-800 mb-2">분할 정보 (원본 재고)</h3>
+                            <div><label class="font-medium text-slate-700">분할 수량 <span class="text-red-500">*</span></label><input type="number" id="split_quantity" placeholder="분할할 수량" class="w-full mt-1 p-2 border rounded-md"></div>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-md text-slate-800 mb-2">분할 생성 재고 정보</h3>
+                            <div class="space-y-4">
+                                <div><label class="font-medium text-slate-700">목적지 로케이션 <span class="text-red-500">*</span></label><div class="flex items-center mt-1"><input type="text" id="split_targetLocation" placeholder="로케이션 코드" class="w-full p-2 border rounded-l-md bg-slate-100" readonly><button class="p-2 border-t border-b border-r rounded-r-md bg-slate-200 hover:bg-slate-300 location-picker-btn" data-target-input="split_targetLocation"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-600 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></button></div></div>
+                                <div><label class="font-medium text-slate-700">재고 상태 <span class="text-red-500">*</span></label><select id="split_newStatus" class="w-full mt-1 p-2 border rounded-md">${statusOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('')}</select></div>
+                                <div><label class="font-medium text-slate-700">LOT</label><input type="text" id="split_newLot" class="w-full mt-1 p-2 border rounded-md"></div>
+                                <div><label class="font-medium text-slate-700">유통기한</label><input type="date" id="split_newExpiry" class="w-full mt-1 p-2 border rounded-md"></div>
+                                <div><label class="font-medium text-slate-700">분할 사유 <span class="text-red-500">*</span></label><textarea id="split_reason" rows="3" class="w-full mt-1 p-2 border rounded-md" placeholder="분할 사유를 입력하세요."></textarea></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="type_change-form" class="adjustment-form-section space-y-4">
+                        <div id="type_change_container"></div>
+                        <div id="type_change_inputs" class="hidden space-y-4">
+                            <div>
+                                <label class="font-medium text-slate-700">전환 수량 <span class="text-red-500">*</span></label>
+                                <input type="number" id="type_change_quantity" class="w-full mt-1 p-2 border rounded-md">
+                            </div>
+                            <div>
+                                <label class="font-medium text-slate-700">전환 사유</label>
+                                <textarea id="type_change_reason" rows="4" class="w-full mt-1 p-2 border rounded-md" placeholder="상품구분 전환 사유를 입력하세요."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    `;
+
+    detailContent.innerHTML = `<div class="lg:col-span-1">${productInfoAndStockHtml}</div><div class="lg:col-span-1">${locationTableHtml}</div><div id="adjustmentFormContainer" class="lg:col-span-1">${adjustmentFormHtml}</div>`;
+    handleAdjustmentTypeChangeInDetail();
+    showPage('detailPage');
+}
+
+function handleLocationSelectionInDetail(optionCode, locationId) {
+    const product = database[optionCode];
+    const location = product.locations.find(l => l.id === locationId);
+    if (!location) return;
+
+    document.getElementById('selectedLocationInfo').innerHTML = `<p class="font-semibold">선택 로케이션 (현재고: ${location.current.toLocaleString()})</p><p class="text-sm">${location.center} / ${location.zone} / <span class="font-bold">${location.loc}</span></p>`;
+    
+    const adjTypeSelect = document.getElementById('adjustmentType');
+    adjTypeSelect.disabled = false;
+    document.getElementById('detailSaveBtn').disabled = false;
+
+    // Reset selections and forms
+    selectedTargetForTypeChange = null;
+    document.querySelectorAll('.related-product-card').forEach(c => c.classList.remove('selected-for-change'));
+    
+    // 재고조정 폼 초기화
+    const newQuantityInput = document.getElementById('adj_newQuantity');
+    const adjustedQuantityInput = document.getElementById('adj_adjustedQuantity');
+    newQuantityInput.value = location.current;
+    adjustedQuantityInput.value = 0;
+    document.getElementById('adj_newStatus').value = location.status;
+    document.getElementById('adj_lot').value = location.lot || '';
+    document.getElementById('adj_expiry').value = location.expiry || '';
+
+    newQuantityInput.oninput = () => {
+        const newQty = parseInt(newQuantityInput.value, 10) || 0;
+        adjustedQuantityInput.value = newQty - location.current;
+    };
+    
+    // 재고분할 폼 초기화
+    document.getElementById('split_newLot').value = location.lot || '';
+    document.getElementById('split_newExpiry').value = location.expiry || '';
+
+
+    // 이동, 분할, 전환 폼 수량 초기화
+    const locationAvailableStock = (location.status === '정상' || location.status === '유통기한임박') ? location.current : 0;
+    ['move_quantity', 'split_quantity', 'type_change_quantity'].forEach(id => {
+        const input = document.getElementById(id);
+        input.max = locationAvailableStock;
+        input.placeholder = `최대 ${locationAvailableStock}개`;
+        input.value = '';
+    });
+
+    // 상품구분 전환 폼 활성화/비활성화 및 UI 구성
+    const typeChangeOption = adjTypeSelect.querySelector('option[value="type_change"]');
+    const counterpartProduct = Object.values(database).find(p => p.sku === product.sku && p.optionCode !== product.optionCode);
+    typeChangeOption.disabled = !counterpartProduct;
+    
+    updateTypeChangeUI(optionCode, locationId);
+
+    handleAdjustmentTypeChangeInDetail();
+}
+
+function updateTypeChangeUI(sourceProductCode, locationId) {
+    const container = document.getElementById('type_change_container');
+    const inputs = document.getElementById('type_change_inputs');
+    const sourceProduct = database[sourceProductCode];
+    const counterpartProduct = Object.values(database).find(p => p.sku === sourceProduct.sku && p.optionCode !== sourceProduct.optionCode);
+
+    if (!counterpartProduct || !locationId) {
+        container.innerHTML = `<div class="p-4 text-center bg-slate-50 rounded-lg text-slate-600">전환할 상품이 없거나<br/>로케이션이 선택되지 않았습니다.</div>`;
+        inputs.classList.add('hidden');
+        selectedTargetForTypeChange = null;
+        return;
+    }
+
+    const sourceLocation = sourceProduct.locations.find(l => l.id === locationId);
+    const convertibleQty = (sourceLocation.status === '정상' || sourceLocation.status === '유통기한임박') ? sourceLocation.current : 0;
+    
+    const generalProduct = sourceProduct.productClassification === '일반상품' ? sourceProduct : counterpartProduct;
+    const kandaProduct = sourceProduct.productClassification === '칸닷슈 상품' ? sourceProduct : counterpartProduct;
+
+    const generalStock = calculateStock([generalProduct]).available;
+    const kandaStock = calculateStock([kandaProduct]).available;
+
+    container.innerHTML = `
+        <div class="space-y-3">
+            <label class="block p-3 border-2 rounded-lg has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50">
+                <div class="flex items-center">
+                    <input type="radio" name="type_change_direction" value="to_kanda" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" checked>
+                    <div class="ml-3 text-sm flex-grow">
+                        <p class="font-semibold text-slate-800">일반상품 <span class="font-normal text-slate-500 mx-1">→</span> 칸닷슈 상품</p>
+                        <p class="text-xs text-slate-500 mt-1">전환 가능 수량: <span class="font-bold" data-stock-type="general">${generalStock.toLocaleString()}</span></p>
+                    </div>
+                </div>
+            </label>
+            <label class="block p-3 border-2 rounded-lg has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50">
+                <div class="flex items-center">
+                    <input type="radio" name="type_change_direction" value="to_general" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                    <div class="ml-3 text-sm flex-grow">
+                        <p class="font-semibold text-slate-800">칸닷슈 상품 <span class="font-normal text-slate-500 mx-1">→</span> 일반상품</p>
+                        <p class="text-xs text-slate-500 mt-1">전환 가능 수량: <span class="font-bold" data-stock-type="kanda">${kandaStock.toLocaleString()}</span></p>
+                    </div>
+                </div>
+            </label>
+        </div>
+    `;
+    inputs.classList.remove('hidden');
+
+    const qtyInput = document.getElementById('type_change_quantity');
+    const updatePlaceholder = () => {
+        const selectedDirection = document.querySelector('input[name="type_change_direction"]:checked').value;
+        const maxQty = (selectedDirection === 'to_kanda') ? generalStock : kandaStock;
+        qtyInput.max = maxQty;
+        qtyInput.placeholder = `최대 ${maxQty.toLocaleString()}개`;
+        qtyInput.value = '';
+    };
+
+    container.querySelectorAll('input[name="type_change_direction"]').forEach(radio => {
+        radio.addEventListener('change', updatePlaceholder);
+    });
+
+    updatePlaceholder();
+}
+
+function handleAdjustmentTypeChangeInDetail() {
+    const type = document.getElementById('adjustmentType').value;
+    document.querySelectorAll('#detailPage .adjustment-form-section').forEach(el => el.classList.remove('active'));
+    
+    const form = document.getElementById(`${type}-form`);
+    if (form) form.classList.add('active');
+}
+
+// --- Modal and Update Logic ---
+function openLocationSearchModal(context) {
+    activeEditingContext = context;
+    const centers = ['인천1센터(청라)', '인천2센터(원창)'];
+    document.getElementById('locationSearchCenter').innerHTML = '<option value="">센터 선택</option>' + centers.map(c => `<option value="${c}">${c}</option>`).join('');
+    const zones = [...new Set(allLocations.map(l => l.zone))].sort();
+    document.getElementById('locationSearchZone').innerHTML = '<option value="">존 선택</option>' + zones.map(z => `<option value="${z}">${z}</option>`).join('');
+    document.getElementById('locationSearchInput').value = '';
+    renderLocationResults();
+    openModal('locationSearchModal');
+}
+
+function renderLocationResults() {
+    const centerQuery = document.getElementById('locationSearchCenter').value;
+    const zoneQuery = document.getElementById('locationSearchZone').value;
+    const locQuery = document.getElementById('locationSearchInput').value.toLowerCase();
+    const filtered = allLocations.filter(loc => (!centerQuery || loc.center === centerQuery) && (!zoneQuery || loc.zone === zoneQuery) && (!locQuery || loc.loc.toLowerCase().includes(locQuery)));
+    
+    locationSearchResults.innerHTML = filtered.length === 0 ? `<tr><td colspan="4" class="text-center p-4 text-slate-500">검색 결과가 없습니다.</td></tr>` : filtered.map((loc, index) => `<tr class="cursor-pointer hover:bg-indigo-50" data-center="${loc.center}" data-zone="${loc.zone}" data-loc="${loc.loc}"><td class="px-4 py-2">${index + 1}</td><td class="px-4 py-2">${loc.center}</td><td class="px-4 py-2">${loc.zone}</td><td class="px-4 py-2 font-semibold">${loc.loc}</td></tr>`).join('');
+    selectLocationBtn.disabled = true;
+    selectedLocationRow = null;
+}
+
+function openReasonModal(context) {
+    activeEditingContext = context;
+    const { field, originalLocation, originalValue, newValue } = context;
+    let fieldName, oldValue, changedValue;
+    const fullLocation = `${originalLocation.center} > ${originalLocation.zone} > ${originalLocation.loc}`;
+
+    switch(field) {
+        case 'location': fieldName = '로케이션'; oldValue = originalLocation.loc; changedValue = newValue.loc; break;
+        case 'lot': fieldName = 'LOT'; oldValue = originalValue; changedValue = newValue; break;
+        case 'expiry': fieldName = '유통기한'; oldValue = originalValue; changedValue = newValue; break;
+        case 'current': fieldName = '현재재고'; oldValue = originalValue; changedValue = newValue; break;
+        case 'status': fieldName = '상태'; oldValue = originalValue; changedValue = newValue; break;
+    }
+
+    document.getElementById('adjustmentInfo').innerHTML = `<div class="col-span-1 font-medium text-slate-500">로케이션</div><div class="col-span-3 font-semibold text-slate-800">${fullLocation}</div><div class="col-span-1 font-medium text-slate-500">수정 항목</div><div class="col-span-3 font-semibold text-slate-800">${fieldName}</div><div class="col-span-1 font-medium text-slate-500">기존</div><div class="col-span-3 font-bold text-red-600">${oldValue}</div><div class="col-span-1 font-medium text-slate-500">변경</div><div class="col-span-3 font-bold text-blue-600">${changedValue}</div>`;
+    const reasonSelect = document.getElementById('reasonSelect');
+    reasonSelect.innerHTML = '<option value="">사유 선택</option>' + reasonOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+    reasonSelect.value = '';
+    document.getElementById('otherReasonContainer').classList.add('hidden');
+    document.getElementById('otherReasonInput').value = '';
+    openModal('reasonModal');
+}
+
+function updateDataAndRefresh(context) {
+    const product = database[context.optionCode];
+    if (!product) return;
+    const location = product.locations.find(l => l.id === context.locationId);
+    if (!location) return;
+
+    if (context.field === 'location') {
+        location.center = context.newValue.center;
+        location.zone = context.newValue.zone;
+        location.loc = context.newValue.loc;
+    } else {
+        location[context.field] = context.newValue;
+    }
+    
+    location.lastAdjustedAt = getCurrentTimestamp();
+    location.lastWorker = 'admin';
+    
+    if (document.getElementById('detailPage').classList.contains('hidden')) {
+        renderAdjustmentListPage();
+    } else {
+        renderDetailPage(context.optionCode);
+    }
+}
+
+// --- Event Handlers ---
+document.addEventListener('DOMContentLoaded', () => {
+    showPage('adjustmentListPage');
+    renderAdjustmentListPage();
+
+    // --- Page Navigation & Global Clicks ---
+    document.body.addEventListener('click', e => {
+        const optionLink = e.target.closest('.option-link');
+        if (optionLink) { renderDetailPage(optionLink.dataset.optionCode); return; }
+        
+        if (e.target.closest('#backToListBtn')) { showPage('adjustmentListPage'); renderAdjustmentListPage(); return; }
+        
+        const locationRow = e.target.closest('#locationDetailTable .location-row');
+        if (locationRow) {
+            const locationId = parseInt(locationRow.dataset.locationId, 10);
+            document.querySelectorAll('#locationDetailTable .location-row').forEach(r => r.classList.remove('selected'));
+            locationRow.classList.add('selected');
+            selectedLocationIdForDetail = locationId;
+            handleLocationSelectionInDetail(currentOptionCodeForDetail, locationId);
+            return;
+        }
+        
+        const pickerBtn = e.target.closest('.location-picker-btn');
+        if (pickerBtn) {
+            openLocationSearchModal({ source: 'detail-picker', targetInputId: pickerBtn.dataset.targetInput });
+            return;
+        }
+
+        const relatedCard = e.target.closest('.related-product-card');
+        if (relatedCard) {
+            const clickedOptionCode = relatedCard.dataset.optionCode;
+            activeRelatedProductCode = clickedOptionCode;
+
+            // 1. Update visual selection
+            document.querySelectorAll('.related-product-card').forEach(c => {
+                c.classList.remove('active-selection');
+            });
+            relatedCard.classList.add('active-selection');
+
+            // 2. Update the stock status display.
+            const stockStatusContainer = document.getElementById('selectedStockStatusContainer');
+            if (stockStatusContainer) {
+                stockStatusContainer.innerHTML = renderSelectedStockStatus(clickedOptionCode);
+            }
+        }
+    });
+
+    // --- Main Adjustment List Page Events ---
+    adjustmentTable.addEventListener('click', e => {
+        const locationButton = e.target.closest('.location-button');
+        if (locationButton) {
+            const { optionCode, locationId } = locationButton.dataset;
+            const product = database[optionCode];
+            const originalLocation = product.locations.find(l => l.id === parseInt(locationId));
+            openLocationSearchModal({ source: 'list-edit', field: 'location', optionCode, locationId: parseInt(locationId), originalLocation });
+        }
+    });
+    adjustmentTable.addEventListener('change', e => {
+        const input = e.target.closest('.editable-input');
+        if (!input) return;
+        const { field, originalValue, optionCode, locationId } = input.dataset;
+        let newValue = (input.type === 'number') ? parseInt(input.value, 10) : input.value;
+        if (String(newValue) === String(originalValue)) return;
+        
+        const product = database[optionCode];
+        const originalLocation = product.locations.find(l => l.id === parseInt(locationId));
+        openReasonModal({ field, optionCode, locationId: parseInt(locationId), originalValue, newValue, originalLocation, inputElement: input });
+    });
+
+    // --- Detail Page Events ---
+    detailPage.addEventListener('change', e => {
+        if (e.target.id === 'adjustmentType') {
+            handleAdjustmentTypeChangeInDetail();
+        }
+    });
+    detailPage.addEventListener('click', e => {
+        if (e.target.closest('#detailSaveBtn')) {
+            const type = document.getElementById('adjustmentType').value;
+            const product = database[currentOptionCodeForDetail];
+            const sourceLocation = product.locations.find(l => l.id === selectedLocationIdForDetail);
+
+            if (!sourceLocation) { alert('먼저 로케이션을 선택해주세요.'); return; }
+
+            let success = false;
+            if (type === 'adjust') {
+                const reason = document.getElementById('adjust_reason').value.trim();
+                if (!reason) {
+                    alert('조정 사유를 입력해주세요.');
+                    return;
+                }
+                const newQuantity = parseInt(document.getElementById('adj_newQuantity').value, 10);
+                const newStatus = document.getElementById('adj_newStatus').value;
+                const newLot = document.getElementById('adj_lot').value;
+                const newExpiry = document.getElementById('adj_expiry').value;
+
+                sourceLocation.current = newQuantity;
+                sourceLocation.status = newStatus;
+                sourceLocation.lot = newLot;
+                sourceLocation.expiry = newExpiry;
+                success = true;
+
+            } else if (type === 'move') {
+                const reason = document.getElementById('move_reason').value.trim();
+                if (!reason) {
+                    alert('이동 사유를 입력해주세요.');
+                    return;
+                }
+                const moveQty = parseInt(document.getElementById('move_quantity').value, 10);
+                const targetLocCode = document.getElementById('move_targetLocation').value;
+                if (!moveQty || !targetLocCode) { alert('이동 수량과 목적지 로케이션을 모두 입력해주세요.'); return; }
+                if (moveQty > sourceLocation.current) { alert('현재고보다 많이 이동할 수 없습니다.'); return; }
+                
+                sourceLocation.current -= moveQty;
+                const newLocationData = { ...sourceLocation, id: generateUniqueId(), loc: targetLocCode, current: moveQty };
+                product.locations.push(newLocationData);
+                success = true;
+            } else if (type === 'split') {
+                 const splitReason = document.getElementById('split_reason').value.trim();
+                 if (!splitReason) {
+                     alert('분할 사유를 입력해주세요.');
+                     return;
+                 }
+                 const splitQty = parseInt(document.getElementById('split_quantity').value, 10);
+                 const targetLocCode = document.getElementById('split_targetLocation').value;
+                 const newStatus = document.getElementById('split_newStatus').value;
+                 const newLot = document.getElementById('split_newLot').value;
+                 const newExpiry = document.getElementById('split_newExpiry').value;
+
+                 if (!splitQty || !targetLocCode) { alert('분할 수량과 목적지 로케이션을 모두 입력해주세요.'); return; }
+                 if (splitQty > sourceLocation.current) { alert('현재고보다 많이 분할할 수 없습니다.'); return; }
+                 
+                 sourceLocation.current -= splitQty;
+                 const newLocationData = { ...sourceLocation, id: generateUniqueId(), loc: targetLocCode, current: splitQty, status: newStatus, lot: newLot, expiry: newExpiry };
+                 product.locations.push(newLocationData);
+                 success = true;
+            } else if (type === 'type_change') {
+                const changeQty = parseInt(document.getElementById('type_change_quantity').value, 10);
+                const selectedDirection = document.querySelector('input[name="type_change_direction"]:checked').value;
+                
+                const generalProduct = Object.values(database).find(p => p.sku === product.sku && p.productClassification === '일반상품');
+                const kandaProduct = Object.values(database).find(p => p.sku === product.sku && p.productClassification === '칸닷슈 상품');
+
+                let fromProduct, toProduct;
+                if(selectedDirection === 'to_kanda') {
+                    fromProduct = generalProduct;
+                    toProduct = kandaProduct;
+                } else {
+                    fromProduct = kandaProduct;
+                    toProduct = generalProduct;
+                }
+
+                if (!fromProduct || !toProduct) { alert('전환할 상품 쌍이 올바르지 않습니다.'); return; }
+                
+                const fromLocation = fromProduct.locations.find(l => l.id === selectedLocationIdForDetail);
+                if (!fromLocation) { alert('선택된 로케이션에 전환할 원본 상품의 재고가 없습니다.'); return; }
+
+                const convertibleQty = (fromLocation.status === '정상' || fromLocation.status === '유통기한임박') ? fromLocation.current : 0;
+                if (!changeQty || changeQty <= 0) { alert('전환 수량을 올바르게 입력해주세요.'); return; }
+                if (changeQty > convertibleQty) { alert('전환 가능 수량보다 많이 입력할 수 없습니다.'); return; }
+
+                fromLocation.current -= changeQty;
+                
+                const existingTargetLocation = toProduct.locations.find(l => l.loc === fromLocation.loc && l.lot === fromLocation.lot && l.expiry === fromLocation.expiry);
+                if (existingTargetLocation) {
+                    existingTargetLocation.current += changeQty;
+                } else {
+                    const newLocationData = { ...fromLocation, id: generateUniqueId(), current: changeQty };
+                    toProduct.locations.push(newLocationData);
+                }
+                success = true;
+            }
+
+            if (success) {
+                alert('조정이 완료되었습니다.');
+                renderDetailPage(currentOptionCodeForDetail);
+            }
+        }
+    });
+
+    // --- Shared Modal Events ---
+    document.getElementById('locationSearchBtn').addEventListener('click', renderLocationResults);
+    locationSearchResults.addEventListener('click', e => {
+        const row = e.target.closest('tr');
+        if (!row || !row.dataset.loc) return;
+        if (selectedLocationRow) selectedLocationRow.classList.remove('bg-indigo-100', 'ring-2', 'ring-indigo-300');
+        row.classList.add('bg-indigo-100', 'ring-2', 'ring-indigo-300');
+        selectedLocationRow = row;
+        selectLocationBtn.disabled = false;
+    });
+    selectLocationBtn.addEventListener('click', () => {
+        if (!selectedLocationRow || !activeEditingContext) return;
+        
+        if (activeEditingContext.source === 'list-edit') {
+            activeEditingContext.newValue = { center: selectedLocationRow.dataset.center, zone: selectedLocationRow.dataset.zone, loc: selectedLocationRow.dataset.loc };
+            closeModal('locationSearchModal');
+            openReasonModal(activeEditingContext);
+        } else if (activeEditingContext.source === 'detail-picker') {
+            const targetInput = document.getElementById(activeEditingContext.targetInputId);
+            if(targetInput) targetInput.value = selectedLocationRow.dataset.loc;
+            closeModal('locationSearchModal');
+        }
+    });
+    document.getElementById('reasonSelect').addEventListener('change', (e) => {
+        document.getElementById('otherReasonContainer').classList.toggle('hidden', e.target.value !== '기타');
+    });
+    document.getElementById('cancelReasonBtn').addEventListener('click', () => {
+        closeModal('reasonModal');
+        if (activeEditingContext && activeEditingContext.inputElement) {
+            activeEditingContext.inputElement.value = activeEditingContext.originalValue;
+        }
+        activeEditingContext = null;
+    });
+    document.getElementById('saveReasonBtn').addEventListener('click', () => {
+        const reason = document.getElementById('reasonSelect').value;
+        const otherReason = document.getElementById('otherReasonInput').value.trim();
+        if (!reason) { alert('수정 사유를 선택해주세요.'); return; }
+        if (reason === '기타' && !otherReason) { alert('기타 사유를 입력해주세요.'); return; }
+        activeEditingContext.reason = reason === '기타' ? otherReason : reason;
+        updateDataAndRefresh(activeEditingContext);
+        closeModal('reasonModal');
+        activeEditingContext = null;
+    });
+    document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+             closeModal(btn.dataset.modalId);
+             activeEditingContext = null;
+        });
+    });
+});
+</script>
+</body>
+</html>
