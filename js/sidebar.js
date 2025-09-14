@@ -14,7 +14,8 @@ let currentPage = Config.getAppConfig().defaultPage;
  */
 $(document).ready(function() {
   initializeSidebar();
-  loadPage('dashboard');
+  // 기본 페이지 로드는 index.html에서 처리하므로 여기서는 제거
+  // loadPage('dashboard');
 });
 
 /**
