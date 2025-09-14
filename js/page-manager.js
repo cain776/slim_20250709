@@ -2782,8 +2782,7 @@ class OrderInfoManagementPage extends BasePage {
         'display': 'grid !important',
         'grid-template-columns': 'repeat(10, 1fr) !important',
         'gap': '8px !important',
-        'margin-bottom': '20px !important',
-        'margin-top': '25px !important',
+        'margin': '0 !important',
         'width': '100% !important',
         'padding': '0 !important',
         'max-width': '100% !important',
@@ -2792,7 +2791,7 @@ class OrderInfoManagementPage extends BasePage {
       });
       
       // 모든 기존 스타일 제거 후 강제 적용
-      container.attr('style', container.attr('style') + '; display: grid !important; grid-template-columns: repeat(10, 1fr) !important; gap: 8px !important; margin-top: 25px !important; height: 120px !important;');
+      container.attr('style', container.attr('style') + '; display: grid !important; grid-template-columns: repeat(10, 1fr) !important; gap: 8px !important; margin: 0 !important; height: 120px !important;');
       
       // 각 카드 래퍼에 flex 스타일 적용
       container.find('.function-card-wrapper').css({
