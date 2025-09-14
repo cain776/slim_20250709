@@ -2608,101 +2608,101 @@ class OrderInfoManagementPage extends BasePage {
     return `
       <section class="content p-3">
         <div class="container-fluid">
-          <!-- 주문정보관리 영역 -->
+          <!-- 자동 주문 등록 영역 -->
           <div class="card mb-3">
             <div class="card-header">
-              <h3 class="card-title card-title-lg">주문정보관리</h3>
+              <h3 class="card-title card-title-lg">자동 주문 등록</h3>
             </div>
             <div class="card-body">
               <div class="function-cards-container">
                 <div class="function-card-wrapper">
-                  <div class="function-card" data-function="order-search">
-                    <div class="function-icon">
+                  <div class="function-card" data-function="search-conditions">
+                    <div class="function-icon" style="color: #007bff;">
                       <i class="fas fa-search"></i>
                     </div>
-                    <div class="function-title">주문 검색</div>
-                    <div class="function-desc">주문번호, 고객명, 상품명으로 주문 검색</div>
+                    <div class="function-title">검색 조건</div>
+                    <div class="function-desc">상세 검색 조건 설정</div>
                   </div>
                 </div>
                 <div class="function-card-wrapper">
-                  <div class="function-card" data-function="order-filter">
-                    <div class="function-icon">
-                      <i class="fas fa-filter"></i>
+                  <div class="function-card" data-function="file-upload">
+                    <div class="function-icon" style="color: #007bff;">
+                      <i class="fas fa-file-upload"></i>
                     </div>
-                    <div class="function-title">주문 필터링</div>
-                    <div class="function-desc">상태, 날짜, 금액별로 주문 필터링</div>
+                    <div class="function-title">파일 업로드</div>
+                    <div class="function-desc">Excel, CSV 파일 업로드</div>
                   </div>
                 </div>
                 <div class="function-card-wrapper">
-                  <div class="function-card" data-function="order-edit">
-                    <div class="function-icon">
+                  <div class="function-card" data-function="data-edit">
+                    <div class="function-icon" style="color: #28a745;">
                       <i class="fas fa-edit"></i>
                     </div>
-                    <div class="function-title">주문 수정</div>
-                    <div class="function-desc">주문 정보 수정 및 업데이트</div>
+                    <div class="function-title">데이터 편집</div>
+                    <div class="function-desc">주문 정보 수정 및 검증</div>
                   </div>
                 </div>
                 <div class="function-card-wrapper">
-                  <div class="function-card" data-function="order-status">
-                    <div class="function-icon">
-                      <i class="fas fa-tasks"></i>
+                  <div class="function-card" data-function="data-validation">
+                    <div class="function-icon" style="color: #17a2b8;">
+                      <i class="fas fa-check-circle"></i>
                     </div>
-                    <div class="function-title">주문 상태 관리</div>
-                    <div class="function-desc">주문 상태 변경 및 진행 상황 관리</div>
+                    <div class="function-title">데이터 검증</div>
+                    <div class="function-desc">필수 항목 및 형식 검증</div>
                   </div>
                 </div>
                 <div class="function-card-wrapper">
-                  <div class="function-card" data-function="order-export">
-                    <div class="function-icon">
-                      <i class="fas fa-download"></i>
+                  <div class="function-card" data-function="schedule-management">
+                    <div class="function-icon" style="color: #ffc107;">
+                      <i class="fas fa-clock"></i>
                     </div>
-                    <div class="function-title">주문 내보내기</div>
-                    <div class="function-desc">Excel, CSV 형태로 주문 데이터 내보내기</div>
+                    <div class="function-title">일정 관리</div>
+                    <div class="function-desc">예약 등록 및 일정 설정</div>
                   </div>
                 </div>
                 <div class="function-card-wrapper">
-                  <div class="function-card" data-function="order-print">
-                    <div class="function-icon">
-                      <i class="fas fa-print"></i>
+                  <div class="function-card" data-function="notification-settings">
+                    <div class="function-icon" style="color: #dc3545;">
+                      <i class="fas fa-bell"></i>
                     </div>
-                    <div class="function-title">주문서 출력</div>
-                    <div class="function-desc">주문서 및 송장 출력</div>
+                    <div class="function-title">알림 설정</div>
+                    <div class="function-desc">이메일, SMS 알림 설정</div>
                   </div>
                 </div>
                 <div class="function-card-wrapper">
-                  <div class="function-card" data-function="order-history">
-                    <div class="function-icon">
+                  <div class="function-card" data-function="progress-status">
+                    <div class="function-icon" style="color: #6c757d;">
+                      <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="function-title">진행 상황</div>
+                    <div class="function-desc">처리 상태 및 진행률 확인</div>
+                  </div>
+                </div>
+                <div class="function-card-wrapper">
+                  <div class="function-card" data-function="processing-history">
+                    <div class="function-icon" style="color: #007bff;">
                       <i class="fas fa-history"></i>
                     </div>
-                    <div class="function-title">주문 이력</div>
-                    <div class="function-desc">주문 변경 이력 및 로그 조회</div>
+                    <div class="function-title">처리 이력</div>
+                    <div class="function-desc">등록 이력 및 로그 확인</div>
                   </div>
                 </div>
                 <div class="function-card-wrapper">
-                  <div class="function-card" data-function="order-bulk">
-                    <div class="function-icon">
-                      <i class="fas fa-layer-group"></i>
+                  <div class="function-card" data-function="template-download">
+                    <div class="function-icon" style="color: #28a745;">
+                      <i class="fas fa-file-download"></i>
+                    </div>
+                    <div class="function-title">템플릿 다운로드</div>
+                    <div class="function-desc">Excel 템플릿 다운로드</div>
+                  </div>
+                </div>
+                <div class="function-card-wrapper">
+                  <div class="function-card" data-function="batch-processing">
+                    <div class="function-icon" style="color: #17a2b8;">
+                      <i class="fas fa-sync-alt"></i>
                     </div>
                     <div class="function-title">일괄 처리</div>
-                    <div class="function-desc">여러 주문의 일괄 상태 변경</div>
-                  </div>
-                </div>
-                <div class="function-card-wrapper">
-                  <div class="function-card" data-function="order-statistics">
-                    <div class="function-icon">
-                      <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <div class="function-title">주문 통계</div>
-                    <div class="function-desc">주문 현황 및 통계 데이터 조회</div>
-                  </div>
-                </div>
-                <div class="function-card-wrapper">
-                  <div class="function-card" data-function="order-backup">
-                    <div class="function-icon">
-                      <i class="fas fa-save"></i>
-                    </div>
-                    <div class="function-title">주문 백업</div>
-                    <div class="function-desc">주문 데이터 백업 및 복원</div>
+                    <div class="function-desc">대량 주문 일괄 등록</div>
                   </div>
                 </div>
               </div>
@@ -2898,16 +2898,16 @@ class OrderInfoManagementPage extends BasePage {
   
   handleFunctionClick(functionType) {
     const messages = {
-      'order-search': '주문 검색 기능을 실행합니다.',
-      'order-filter': '주문 필터링 기능을 실행합니다.',
-      'order-edit': '주문 수정 기능을 실행합니다.',
-      'order-status': '주문 상태 관리 기능을 실행합니다.',
-      'order-export': '주문 내보내기 기능을 실행합니다.',
-      'order-print': '주문서 출력 기능을 실행합니다.',
-      'order-history': '주문 이력 조회 기능을 실행합니다.',
-      'order-bulk': '일괄 처리 기능을 실행합니다.',
-      'order-statistics': '주문 통계 조회 기능을 실행합니다.',
-      'order-backup': '주문 백업 기능을 실행합니다.'
+      'search-conditions': '검색 조건 설정 기능을 실행합니다.',
+      'file-upload': '파일 업로드 기능을 실행합니다.',
+      'data-edit': '데이터 편집 기능을 실행합니다.',
+      'data-validation': '데이터 검증 기능을 실행합니다.',
+      'schedule-management': '일정 관리 기능을 실행합니다.',
+      'notification-settings': '알림 설정 기능을 실행합니다.',
+      'progress-status': '진행 상황 확인 기능을 실행합니다.',
+      'processing-history': '처리 이력 조회 기능을 실행합니다.',
+      'template-download': '템플릿 다운로드 기능을 실행합니다.',
+      'batch-processing': '일괄 처리 기능을 실행합니다.'
     };
     
     const message = messages[functionType] || '기능을 실행합니다.';
