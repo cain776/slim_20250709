@@ -104,9 +104,9 @@ function generateSummaryCard() {
   `;
 }
 
-/**
- * 공지사항 카드 생성
- */
+  /**
+   * 공지 카드 생성
+   */
 function generateNoticeCard() {
   const { notices } = dashboardData;
   
@@ -124,7 +124,7 @@ function generateNoticeCard() {
       <div class="card-header">
         <div class="row no-gutters align-items-center">
           <div class="col">
-            <h3 class="card-title card-title-lg mb-0">공지사항</h3>
+            <h3 class="card-title card-title-lg mb-0">공지</h3>
           </div>
           <div class="col-auto">
             <a href="#" class="text-link" onclick="loadPage('notice')">더보기+</a>

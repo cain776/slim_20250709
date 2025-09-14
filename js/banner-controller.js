@@ -667,10 +667,10 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('💡 Ctrl + B 키를 눌러 배너 제어판을 열 수 있습니다.');
   console.log('📖 사용법: bannerController.메서드명() 형태로 사용하세요.');
   
-  // 3초 후 안내 토스트 표시 (기존 시스템과 연동)
-  setTimeout(() => {
-    if (window.showToast) {
-      showToast('🎨 안내', 'Ctrl + B 키로 배너 제어판을 열 수 있습니다.', 'info');
-    }
-  }, 3000);
+  // 3초 후 안내 토스트 표시 (비활성화)
+  // setTimeout(() => {
+  //   if (window.showToast) {
+  //     showToast('🎨 안내', 'Ctrl + B 키로 배너 제어판을 열 수 있습니다.', 'info');
+  //   }
+  // }, 3000);
 });

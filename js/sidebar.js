@@ -14,13 +14,7 @@ let currentPage = Config.getAppConfig().defaultPage;
  */
 $(document).ready(function() {
   initializeSidebar();
-  
-  // 페이지 히스토리 설정
-  pageManager.setupPageHistory();
-  
-  // 기본 페이지 로드
-  const defaultPage = Config.getAppConfig().defaultPage;
-  loadPage(defaultPage);
+  loadPage('dashboard');
 });
 
 /**
@@ -75,28 +69,27 @@ function updateMenuActiveState($clickedLink) {
 }
 
 /**
- * 페이지 로드 함수 (PageManager 사용)
+ * 페이지 로드 함수 (간단한 버전)
  */
 async function loadPage(pageId) {
-  console.log(`페이지 로드 시작: ${pageId}`);
+  if (currentPage === pageId) return;
   
-  // 현재 페이지 업데이트
   currentPage = pageId;
   
   try {
-    // PageManager를 통한 페이지 로드
-    const page = await pageManager.loadPage(pageId);
-    
-    if (page) {
-      console.log(`페이지 로드 완료: ${pageId}`);
-      
-      // 히스토리 업데이트 (선택사항)
-      pageManager.pushPageState(pageId, page.getTitle());
-    }
-    
+    await pageManager.loadPage(pageId);
   } catch (error) {
     console.error(`페이지 로드 실패: ${pageId}`, error);
-    showError(`페이지 로드 중 오류가 발생했습니다: ${error.message}`);
+    $('#main-content').html(`
+      <div class="content-header">
+        <h1>오류</h1>
+      </div>
+      <div class="content">
+        <div class="alert alert-danger">
+          페이지 로드 중 오류가 발생했습니다.
+        </div>
+      </div>
+    `);
   }
 }
 

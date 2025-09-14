@@ -72,46 +72,92 @@ const MENU_CONFIG = {
     },
     { 
       id: 'notice', 
-      name: '공지사항', 
+      name: '공지', 
       icon: 'fas fa-bell',
       url: '#',
       order: 2
     },
     {
-      id: 'inbound',
-      name: '입고 관리',
-      icon: 'fas fa-box-open',
+      id: 'order-register',
+      name: '주문등록',
+      icon: 'fas fa-plus-circle',
       hasSubmenu: true,
       order: 3,
       submenu: [
-        { id: 'inbound-history', name: '입고 내역', url: '#', order: 1 },
-        { id: 'inbound-register', name: '입고 등록', url: '#', order: 2 }
+        { id: 'manual-order-register', name: '수동 주문 등록', url: '#', order: 1 },
+        { id: 'qoo10-order-register', name: 'Qoo10 주문 등록', url: '#', order: 2 },
+        { id: 'rakuten-order-register', name: 'Rakuten 주문 등록', url: '#', order: 3 },
+        { id: 'nhn-order-register', name: 'NHN 주문 등록', url: '#', order: 4 },
+        { id: 'playauto-order-register', name: 'Play Auto 주문 등록', url: '#', order: 5 }
+      ]
+    },
+    {
+      id: 'order-management',
+      name: '주문관리',
+      icon: 'fas fa-tasks',
+      hasSubmenu: true,
+      order: 4,
+      submenu: [
+        { id: 'order-info-management', name: '주문정보관리', url: '#', order: 1 },
+        { id: 'deleted-order-management', name: '삭제 주문 관리', url: '#', order: 2 },
+        { id: 'archived-order-management', name: '보관 주문 관리', url: '#', order: 3 }
+      ]
+    },
+    {
+      id: 'inbound',
+      name: '입고',
+      icon: 'fas fa-box-open',
+      hasSubmenu: true,
+      order: 5,
+      submenu: [
+        { id: 'inbound-list', name: '입고목록', url: '#', order: 1 },
+        { id: 'inbound-history', name: '입고 내역', url: '#', order: 2 },
+        { id: 'inbound-register', name: '입고 등록', url: '#', order: 3 }
       ]
     },
     {
       id: 'outbound',
-      name: '출고 관리',
+      name: '출고',
       icon: 'fas fa-paper-plane',
       hasSubmenu: true,
-      order: 4,
+      order: 6,
       submenu: [
         { id: 'outbound-history', name: '출고 내역', url: '#', order: 1 },
         { id: 'outbound-register', name: '출고 등록', url: '#', order: 2 }
       ]
     },
+    {
+      id: 'inventory',
+      name: '재고',
+      icon: 'fas fa-warehouse',
+      hasSubmenu: true,
+      order: 7,
+      submenu: [
+        { id: 'inventory-adjustment', name: '재고조정', url: '#', order: 1 },
+        { id: 'inventory-history', name: '재고 내역', url: '#', order: 2 },
+        { id: 'inventory-status', name: '재고 현황', url: '#', order: 3 }
+      ]
+    },
     { 
-      id: 'statistics', 
-      name: '통계', 
-      icon: 'fas fa-chart-bar',
+      id: 'products', 
+      name: '상품', 
+      icon: 'fas fa-box',
       url: '#',
-      order: 5
+      order: 8
+    },
+    { 
+      id: 'shipping', 
+      name: '배송', 
+      icon: 'fas fa-truck',
+      url: '#',
+      order: 9
     },
     { 
       id: 'settings', 
       name: '설정', 
       icon: 'fas fa-cog',
       url: '#',
-      order: 6
+      order: 10
     }
   ]
 };
@@ -232,6 +278,22 @@ const Config = {
     const currentLevel = levels.indexOf(APP_CONFIG.logging.level);
     const requestLevel = levels.indexOf(level);
     return requestLevel >= currentLevel;
+  }
+};
+
+// 파일 크기 모니터링 설정
+const MONITORING_CONFIG = {
+  INDEX_FILE_WARNING_SIZE: 50000,    // 50KB 경고
+  INDEX_FILE_CRITICAL_SIZE: 100000,  // 100KB 위험
+  INDEX_FILE_MAX_LINES: 1000,        // 1000줄 최대
+  
+  // 분리 권장 임계값
+  REFACTORING_THRESHOLDS: {
+    fileSize: 100000,      // 100KB 이상
+    lineCount: 2000,       // 2000줄 이상
+    teamSize: 3,           // 개발팀 3명 이상
+    menuCount: 20,         // 메뉴 20개 이상
+    modalCount: 10         // 모달 10개 이상
   }
 };
 

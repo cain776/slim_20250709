@@ -24,39 +24,157 @@ class BasePage {
   }
 
   /**
-   * 페이지 라이프사이클 - 로드
+   * 페이지 라이프사이클 - 로드 (단순화)
    */
   async load() {
-    console.log(`페이지 로드 시작: ${this.pageId}`);
-    
-    if (this.isLoading) {
-      console.warn(`이미 로딩 중인 페이지: ${this.pageId}`);
-      return;
-    }
-
-    this.isLoading = true;
-    
     try {
-      // 로딩 표시
-      this.showLoading();
-      
-      // 데이터 로드
-      await this.loadData();
-      
       // HTML 렌더링
-      await this.render();
+      const html = await this.render();
       
-      // 초기화
-      await this.initialize();
+      // 메인 콘텐츠 영역에 직접 삽입
+      $('#main-content').html(html);
       
-      console.log(`페이지 로드 완료: ${this.pageId}`);
+      // CSS 그리드 레이아웃 강제 적용
+      this.forceGridLayout();
+      
+      // 이벤트 리스너 설정
+      await this.setupEventListeners();
       
     } catch (error) {
       console.error(`페이지 로드 실패: ${this.pageId}`, error);
-      errorManager.handleError(error, { pageId: this.pageId, context: 'page_load' });
-      this.showError(error.message);
-    } finally {
-      this.isLoading = false;
+      $('#main-content').html(`
+        <div class="content-header">
+          <h1>오류</h1>
+        </div>
+        <div class="content">
+          <div class="alert alert-danger">
+            페이지 로드 중 오류가 발생했습니다: ${error.message}
+          </div>
+        </div>
+      `);
+    }
+  }
+  
+  forceGridLayout() {
+    // 기능 카드 컨테이너에 그리드 스타일 강제 적용
+    const container = $('.function-cards-container');
+    if (container.length > 0) {
+      // Grid로 10개 카드 한줄 배치
+      container.css({
+        'display': 'grid !important',
+        'grid-template-columns': 'repeat(10, 1fr) !important',
+        'gap': '8px !important',
+        'margin-bottom': '20px !important',
+        'margin-top': '25px !important',
+        'width': '100% !important',
+        'padding': '0 !important',
+        'max-width': '100% !important',
+        'overflow': 'visible !important',
+        'height': '120px !important'
+      });
+      
+      // 모든 기존 스타일 제거 후 강제 적용
+      container.attr('style', container.attr('style') + '; display: grid !important; grid-template-columns: repeat(10, 1fr) !important; gap: 8px !important; margin-top: 25px !important; height: 120px !important;');
+      
+      // 각 카드 래퍼에 flex 스타일 적용
+      container.find('.function-card-wrapper').css({
+        'display': 'flex',
+        'width': '100%'
+      });
+      
+      // 각 카드에 flex 스타일 적용
+      container.find('.function-card').css({
+        'flex': '1',
+        'display': 'flex',
+        'flex-direction': 'column',
+        'justify-content': 'center',
+        'align-items': 'center',
+        'width': '100%',
+        'height': '120px',
+        'cursor': 'pointer',
+        'border': '1px solid #dee2e6',
+        'background': '#fff',
+        'border-radius': '6px',
+        'padding': '12px 8px',
+        'text-align': 'center',
+        'transition': 'all 0.2s ease',
+        'max-width': '100%',
+        'box-sizing': 'border-box',
+        'position': 'relative',
+        'z-index': '5'
+      });
+      
+      // 아이콘 스타일
+      container.find('.function-card .function-icon').css({
+        'font-size': '24px',
+        'color': '#007bff',
+        'margin-bottom': '8px',
+        'display': 'block'
+      });
+      
+      // 제목 스타일
+      container.find('.function-card .function-title').css({
+        'font-size': '14px',
+        'font-weight': '600',
+        'color': '#333',
+        'margin-bottom': '6px',
+        'line-height': '1.2'
+      });
+      
+      // 설명 스타일
+      container.find('.function-card .function-desc').css({
+        'font-size': '12px',
+        'color': '#6c757d',
+        'line-height': '1.3',
+        'margin-bottom': '0',
+        'text-align': 'center'
+      });
+      
+      // 화면 크기 변경 시 동적 업데이트
+      $(window).on('resize.gridLayout', () => {
+        this.forceGridLayout();
+      });
+      
+      // 추가 강제 적용 - DOM 직접 조작
+      setTimeout(() => {
+        const containerElement = container[0];
+        if (containerElement) {
+          containerElement.style.setProperty('display', 'grid', 'important');
+          containerElement.style.setProperty('grid-template-columns', 'repeat(10, 1fr)', 'important');
+          containerElement.style.setProperty('gap', '8px', 'important');
+          containerElement.style.setProperty('margin-top', '20px', 'important');
+          containerElement.style.setProperty('width', '100%', 'important');
+          containerElement.style.setProperty('max-width', '100%', 'important');
+        }
+        
+        // 카드 바디 패딩 및 z-index 강제 적용
+        const cardBody = container.closest('.card-body');
+        if (cardBody.length > 0) {
+          cardBody.css({
+            'padding-top': '20px !important',
+            'padding-bottom': '20px !important',
+            'position': 'relative !important',
+            'z-index': '1 !important'
+          });
+        }
+        
+        // 카드 헤더 하단 여백 및 z-index 강제 적용
+        const cardHeader = container.closest('.card').find('.card-header');
+        if (cardHeader.length > 0) {
+          cardHeader.css({
+            'margin-bottom': '10px !important',
+            'border-bottom': '1px solid #dee2e6 !important',
+            'position': 'relative !important',
+            'z-index': '0 !important'
+          });
+        }
+        
+        // 컨테이너 z-index 강제 적용
+        container.css({
+          'position': 'relative !important',
+          'z-index': '2 !important'
+        });
+      }, 100);
     }
   }
 

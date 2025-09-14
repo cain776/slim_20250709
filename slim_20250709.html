@@ -37,7 +37,7 @@
         font-weight: 600;
     }
 
-    /* 공지사항 폰트 사이즈 조정 */
+    /* 공지 폰트 사이즈 조정 */
     .nav-pills .nav-link {
         font-size: 0.9rem;
     }
@@ -141,13 +141,48 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
+      <li class="nav-item search-box-item">
+        <form class="form-inline ml-3">
+          <div class="input-group input-group-sm">
+            <input class="form-control form-control-navbar" type="search" 
+                   placeholder="복수화물 조회" aria-label="복수화물 조회"
+                   style="width: 200px;" id="multiTrackSearchInput">
+          </div>
+        </form>
+      </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-          <a class="nav-link" href="#" data-toggle="modal" data-target="#multiTrackModal" role="button" title="복수화물 조회">
-              <i class="fas fa-search"></i>
+      <!-- 언어선택 드롭다운 -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-globe"></i>
+          <span id="current-language" class="d-none d-md-inline ml-1">한국어</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="languageDropdown">
+          <a class="dropdown-item language-item" href="#" onclick="changeLanguage('ko')">
+            <div class="language-item-content">
+              <span class="flag-emoji">🇰🇷</span>
+              <span class="language-text">한국어</span>
+              <i class="fas fa-check text-success language-check" id="check-ko"></i>
+            </div>
           </a>
+          <a class="dropdown-item language-item" href="#" onclick="changeLanguage('ja')">
+            <div class="language-item-content">
+              <span class="flag-emoji">🇯🇵</span>
+              <span class="language-text">日本語</span>
+              <i class="fas fa-check text-success language-check d-none" id="check-ja"></i>
+            </div>
+          </a>
+          <a class="dropdown-item language-item" href="#" onclick="changeLanguage('en')">
+            <div class="language-item-content">
+              <span class="flag-emoji">🇺🇸</span>
+              <span class="language-text">English</span>
+              <i class="fas fa-check text-success language-check d-none" id="check-en"></i>
+            </div>
+          </a>
+        </div>
       </li>
+
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
@@ -159,22 +194,21 @@
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
       </li>
-       <li class="nav-item dropdown user-menu">
-        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-          <img src="https://placehold.co/160x160/007bff/ffffff?text=U" class="user-image img-circle elevation-2" alt="User Image">
-          <span class="d-none d-md-inline">사용자</span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <li class="user-header bg-primary">
-            <img src="https://placehold.co/160x160/007bff/ffffff?text=U" class="img-circle elevation-2" alt="User Image">
-            <p>사용자<small>Member since Nov. 2023</small></p>
-          </li>
-          <li class="user-footer">
-            <a href="#" class="btn btn-default btn-flat">프로필</a>
-            <a href="#" class="btn btn-default btn-flat float-right">로그아웃</a>
-          </li>
-        </ul>
-      </li>
+               <li class="nav-item dropdown user-menu">
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+            <img src="https://placehold.co/184x184/007bff/ffffff?text=T" class="user-image img-circle elevation-2" alt="User Image">
+          </a>
+          <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <li class="user-header bg-primary">
+              <img src="https://placehold.co/184x184/007bff/ffffff?text=T" class="img-circle elevation-2" alt="User Image">
+              <p>티핏<small>Member since Jan. 2025</small></p>
+            </li>
+            <li class="user-footer">
+              <a href="#" class="btn btn-default btn-flat">프로필</a>
+              <a href="#" class="btn btn-default btn-flat float-right">로그아웃</a>
+            </li>
+          </ul>
+        </li>
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -189,7 +223,7 @@
       <nav class="mt-2">
         <ul id="lnb-menu" class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item"><a href="#" class="nav-link active"><i class="nav-icon fas fa-home"></i><p>홈</p></a></li>
-          <li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-bell"></i><p>공지사항</p></a></li>
+                      <li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-bell"></i><p>공지</p></a></li>
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-box-open"></i><p>입고 관리<i class="right fas fa-angle-left"></i></p>
@@ -236,7 +270,7 @@
           <div class="col-lg-3 d-flex align-items-stretch">
              <div class="card w-100 d-flex flex-column">
               <div class="card-header d-flex justify-content-between align-items-center">
-                  <h3 class="card-title card-title-lg mb-0">공지사항</h3>
+                  <h3 class="card-title card-title-lg mb-0">공지</h3>
                   <a href="#" class="text-link">더보기+</a>
               </div>
               <div class="card-body p-0 pb-2">
@@ -317,6 +351,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
+<script src="js/language-selector.js"></script>
 
 <script>
 $(function () {
@@ -389,6 +424,13 @@ $(function () {
     // Activate carousel
     $('#promoCarousel').carousel({
         interval: 3000
+    });
+    
+    // 복수화물 조회 검색 박스 포커스 시 모달 열기
+    $('#multiTrackSearchInput').on('focus', function() {
+        $('#multiTrackModal').modal('show');
+        // 포커스를 제거하여 반복 동작 방지
+        $(this).blur();
     });
 });
 </script>

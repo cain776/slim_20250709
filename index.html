@@ -13,10 +13,216 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css">
   
-  <!-- Custom CSS -->
+  <!-- Custom CSS - AdminLTE 이후에 로드하여 우선순위 확보 -->
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/banner-controller.css">
+  
+  <!-- 추가 CSS 우선순위 강화 -->
+  <style>
+    /* 기능 카드 그리드 레이아웃 강제 적용 - 최고 우선순위 */
+    .function-cards-container {
+      display: grid !important;
+      grid-template-columns: repeat(10, 1fr) !important;
+      gap: 8px !important;
+      margin-bottom: 20px !important;
+      margin-top: 25px !important;
+      width: 100% !important;
+      padding: 0 !important;
+      max-width: 100% !important;
+      overflow: visible !important;
+      height: 120px !important;
+    }
+    
+    /* 카드 바디와 헤더 간격 조정 */
+    .card-body {
+      padding-top: 20px !important;
+      position: relative !important;
+      z-index: 1 !important;
+    }
+    
+    /* 카드 헤더 하단 여백 추가 */
+    .card-header {
+      margin-bottom: 10px !important;
+      border-bottom: 1px solid #dee2e6 !important;
+      position: relative !important;
+      z-index: 0 !important;
+    }
+    
+    /* 기능 카드 컨테이너 z-index 설정 */
+    .function-cards-container {
+      position: relative !important;
+      z-index: 2 !important;
+    }
+    
+    /* 카드 래퍼 z-index 설정 */
+    .function-card-wrapper {
+      position: relative !important;
+      z-index: 1 !important;
+    }
+    
+    .function-card-wrapper {
+      display: flex !important;
+      width: 100% !important;
+    }
+    
+    .function-card {
+      flex: 1 !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+      border: 1px solid #dee2e6 !important;
+      background: #fff !important;
+      height: 120px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+      justify-content: center !important;
+      align-items: center !important;
+      border-radius: 6px !important;
+      padding: 12px 8px !important;
+      text-align: center !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+      z-index: 5 !important;
+    }
+    
+    .function-card:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+      z-index: 100 !important;
+      position: relative !important;
+      border-color: #007bff !important;
+    }
+    
+    .function-card .function-icon {
+      font-size: 24px !important;
+      color: #007bff !important;
+      margin-bottom: 8px !important;
+      display: block !important;
+    }
+    
+    .function-card .function-title {
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      color: #333 !important;
+      margin-bottom: 6px !important;
+      line-height: 1.2 !important;
+    }
+    
+    .function-card .function-desc {
+      font-size: 12px !important;
+      color: #6c757d !important;
+      line-height: 1.3 !important;
+      margin-bottom: 0 !important;
+      text-align: center !important;
+    }
+    
+    /* 반응형 디자인 */
+    @media (max-width: 1200px) {
+      .function-cards-container {
+        grid-template-columns: repeat(10, 1fr) !important;
+        gap: 12px !important;
+      }
+      
+      .function-card {
+        min-height: 120px !important;
+        padding: 15px 8px !important;
+      }
+      
+      .function-card .function-icon {
+        font-size: 20px !important;
+        margin-bottom: 8px !important;
+      }
+      
+      .function-card .function-title {
+        font-size: 12px !important;
+        margin-bottom: 6px !important;
+      }
+      
+      .function-card .function-desc {
+        font-size: 10px !important;
+        line-height: 1.3 !important;
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .function-cards-container {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 15px !important;
+      }
+      
+      .function-card {
+        min-height: 130px !important;
+        padding: 18px 12px !important;
+      }
+      
+      .function-card .function-icon {
+        font-size: 24px !important;
+        margin-bottom: 10px !important;
+      }
+      
+      .function-card .function-title {
+        font-size: 14px !important;
+        margin-bottom: 7px !important;
+      }
+      
+      .function-card .function-desc {
+        font-size: 11px !important;
+        line-height: 1.3 !important;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .function-cards-container {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+      }
+      
+      .function-card {
+        min-height: 120px !important;
+        padding: 15px 10px !important;
+      }
+      
+      .function-card .function-icon {
+        font-size: 24px !important;
+        margin-bottom: 10px !important;
+      }
+      
+      .function-card .function-title {
+        font-size: 14px !important;
+      }
+      
+      .function-card .function-desc {
+        font-size: 11px !important;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .function-cards-container {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+      }
+      
+      .function-card {
+        min-height: 110px !important;
+        padding: 12px 8px !important;
+      }
+      
+      .function-card .function-icon {
+        font-size: 22px !important;
+        margin-bottom: 8px !important;
+      }
+      
+      .function-card .function-title {
+        font-size: 13px !important;
+      }
+      
+      .function-card .function-desc {
+        font-size: 10px !important;
+      }
+    }
+  </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -27,13 +233,48 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
+      <li class="nav-item search-box-item">
+        <form class="form-inline ml-3">
+          <div class="input-group input-group-sm">
+            <input class="form-control form-control-navbar" type="search" 
+                   placeholder="복수화물 조회" aria-label="복수화물 조회"
+                   style="width: 200px;" id="multiTrackSearchInput">
+          </div>
+        </form>
+      </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-          <a class="nav-link" href="#" data-toggle="modal" data-target="#multiTrackModal" role="button" title="복수화물 조회">
-              <i class="fas fa-search"></i>
+      <!-- 언어선택 드롭다운 -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-globe"></i>
+          <span id="current-language" class="d-none d-md-inline ml-1">한국어</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="languageDropdown">
+          <a class="dropdown-item language-item" href="#" onclick="changeLanguage('ko')">
+            <div class="language-item-content">
+              <span class="flag-emoji">🇰🇷</span>
+              <span class="language-text">한국어</span>
+              <i class="fas fa-check text-success language-check" id="check-ko"></i>
+            </div>
           </a>
+          <a class="dropdown-item language-item" href="#" onclick="changeLanguage('ja')">
+            <div class="language-item-content">
+              <span class="flag-emoji">🇯🇵</span>
+              <span class="language-text">日本語</span>
+              <i class="fas fa-check text-success language-check d-none" id="check-ja"></i>
+            </div>
+          </a>
+          <a class="dropdown-item language-item" href="#" onclick="changeLanguage('en')">
+            <div class="language-item-content">
+              <span class="flag-emoji">🇺🇸</span>
+              <span class="language-text">English</span>
+              <i class="fas fa-check text-success language-check d-none" id="check-en"></i>
+            </div>
+          </a>
+        </div>
       </li>
+
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
@@ -47,13 +288,12 @@
       </li>
        <li class="nav-item dropdown user-menu">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-          <img src="https://placehold.co/160x160/007bff/ffffff?text=U" class="user-image img-circle elevation-2" alt="User Image">
-          <span class="d-none d-md-inline">사용자</span>
+          <img src="https://placehold.co/184x184/007bff/ffffff?text=T" class="user-image img-circle elevation-2" alt="User Image">
         </a>
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <li class="user-header bg-primary">
-            <img src="https://placehold.co/160x160/007bff/ffffff?text=U" class="img-circle elevation-2" alt="User Image">
-            <p>사용자<small>Member since Nov. 2023</small></p>
+            <img src="https://placehold.co/184x184/007bff/ffffff?text=T" class="img-circle elevation-2" alt="User Image">
+            <p>티핏<small>Member since Jan. 2025</small></p>
           </li>
           <li class="user-footer">
             <a href="#" class="btn btn-default btn-flat">프로필</a>
@@ -66,7 +306,7 @@
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <aside class="main-sidebar sidebar-dark-purple elevation-4">
     <a href="#" class="brand-link">
       <i class="fa-solid fa-cubes-stacked fa-lg brand-image img-circle elevation-3" style="opacity: .8"></i>
       <span class="brand-text font-weight-light">eXmate slim</span>
@@ -83,24 +323,97 @@
           <li class="nav-item">
             <a href="#" class="nav-link" data-page="notice">
               <i class="nav-icon fas fa-bell"></i>
-              <p>공지사항</p>
+              <p>공지</p>
             </a>
+          </li>
+          <!-- 주문등록 메뉴 -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-plus-circle"></i>
+              <p>주문등록<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="manual-order-register">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>수동 주문 등록</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="qoo10-order-register">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>Qoo10 주문 등록</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="rakuten-order-register">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>Rakuten 주문 등록</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="nhn-order-register">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>NHN 주문 등록</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="playauto-order-register">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>Play Auto 주문 등록</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          
+          <!-- 주문관리 메뉴 -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-tasks"></i>
+              <p>주문관리<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="order-info-management">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>주문정보관리</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="deleted-order-management">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>삭제 주문 관리</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="archived-order-management">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>보관 주문 관리</p>
+                </a>
+              </li>
+            </ul>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-box-open"></i>
-              <p>입고 관리<i class="right fas fa-angle-left"></i></p>
+              <p>입고<i class="right fas fa-angle-left"></i></p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
+                <a href="#" class="nav-link" data-page="inbound-list">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>입고목록</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="#" class="nav-link" data-page="inbound-history">
-                  <i class="far fa-circle nav-icon"></i>
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
                   <p>입고 내역</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link" data-page="inbound-register">
-                  <i class="far fa-circle nav-icon"></i>
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
                   <p>입고 등록</p>
                 </a>
               </li>
@@ -109,27 +422,59 @@
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-paper-plane"></i>
-              <p>출고 관리<i class="right fas fa-angle-left"></i></p>
+              <p>출고<i class="right fas fa-angle-left"></i></p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="#" class="nav-link" data-page="outbound-history">
-                  <i class="far fa-circle nav-icon"></i>
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
                   <p>출고 내역</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link" data-page="outbound-register">
-                  <i class="far fa-circle nav-icon"></i>
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
                   <p>출고 등록</p>
                 </a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link" data-page="statistics">
-              <i class="nav-icon fas fa-chart-bar"></i>
-              <p>통계</p>
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-warehouse"></i>
+              <p>재고<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="inventory-adjustment">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>재고조정</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="inventory-history">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>재고 내역</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-page="inventory-status">
+                  <span class="nav-icon" style="width: 1.2rem; text-align: center;">-</span>
+                  <p>재고 현황</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-page="products">
+              <i class="nav-icon fas fa-box"></i>
+              <p>상품</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-page="shipping">
+              <i class="nav-icon fas fa-truck"></i>
+              <p>배송</p>
             </a>
           </li>
           <li class="nav-item">
@@ -199,7 +544,7 @@
         <label class="font-weight-bold">메뉴 제어</label>
         <div class="btn-group-vertical d-block">
           <button class="btn btn-sm btn-success mb-1" onclick="addTestMenu()">테스트 메뉴 추가</button>
-          <button class="btn btn-sm btn-warning mb-1" onclick="toggleNoticeMenu()">공지사항 토글</button>
+          <button class="btn btn-sm btn-warning mb-1" onclick="toggleNoticeMenu()">공지 토글</button>
           <button class="btn btn-sm btn-info mb-1" onclick="addBadgeToStats()">통계에 뱃지 추가</button>
         </div>
       </div>
@@ -282,6 +627,7 @@
 <script src="js/sidebar.js"></script>
 <script src="js/dashboard.js"></script>
 <script src="js/banner-controller.js"></script>
+<script src="js/language-selector.js"></script>
 
 <!-- LNB 제어 함수들 -->
 <script>
@@ -312,12 +658,12 @@ function addTestMenu() {
   showToast('성공', '테스트 메뉴가 추가되었습니다.', 'success');
 }
 
-// 공지사항 메뉴 토글
+// 공지 메뉴 토글
 function toggleNoticeMenu() {
   lnbController.toggleMenuItem('notice');
   
   const isVisible = lnbController.menuElement.find('[data-page="notice"]').closest('.nav-item').is(':visible');
-  showToast('알림', `공지사항 메뉴가 ${isVisible ? '표시' : '숨김'}되었습니다.`, 'info');
+  showToast('알림', `공지 메뉴가 ${isVisible ? '표시' : '숨김'}되었습니다.`, 'info');
 }
 
 // 통계 메뉴에 뱃지 추가
@@ -415,10 +761,17 @@ $(document).ready(function() {
   console.log('💡 Ctrl + L 키를 눌러 LNB 제어판을 열 수 있습니다.');
   console.log('📖 사용법: lnbController.메서드명() 형태로 사용하세요.');
   
-  // 3초 후 안내 토스트 표시
-  setTimeout(() => {
-    showToast('💡 안내', 'Ctrl + L 키로 LNB 제어판을 열 수 있습니다.', 'info');
-  }, 2000);
+  // 3초 후 안내 토스트 표시 (비활성화)
+  // setTimeout(() => {
+  //   showToast('💡 안내', 'Ctrl + L 키로 LNB 제어판을 열 수 있습니다.', 'info');
+  // }, 2000);
+  
+  // 복수화물 조회 검색 박스 포커스 시 모달 열기
+  $('#multiTrackSearchInput').on('focus', function() {
+    $('#multiTrackModal').modal('show');
+    // 포커스를 제거하여 반복 동작 방지
+    $(this).blur();
+  });
 });
 </script>
 </body>
